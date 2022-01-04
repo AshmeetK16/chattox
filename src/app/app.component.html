@@ -1,0 +1,8 @@
+<div id="chatContainer">
+  <app-sidebar (conversationClicked)="onConversationSelected($event)"></app-sidebar>
+  <div id="chat">
+    <app-chat-container [conversation]="conversation" *ngIf="conversation"></app-chat-container>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
