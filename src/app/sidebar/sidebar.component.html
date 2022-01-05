@@ -2,21 +2,23 @@
     <div id="row1">
       <div id="sidebarHeader">
         <div class="avatarContainer">
-          <!-- <img src="../../assets/images/noPic.svg" /> -->
+          <img src="../../assets/images/noPic.svg" />
         </div>
         <div class="actionsContainer">
-          <!-- <img src="../../assets/images/statusIcon.svg" />
+          <img src="../../assets/images/statusIcon.svg" />
           <img src="../../assets/images/chatIcon.svg" />
-          <img src="../../assets/images/moreVertIcon.svg" /> -->
+          <img src="../../assets/images/moreVertIcon.svg" />
         </div>
       </div>
-      <div id="searchBox">
-        <!-- <img width="19" src="../../assets/images/searchIcon.svg" /> -->
-        <input
-          [(ngModel)]="searchText"
-          type="text"
-          placeholder="Search or start the new chat"
-        />
+      <div class="searchBoxContainer">
+        <div id="searchBox">
+          <img width="19" src="../../assets/images/searchIcon.svg" />
+          <input
+            [(ngModel)]="searchText"
+            type="text"
+            placeholder="Search or start the new chat"
+          />
+        </div>
       </div>
     </div>
   
@@ -31,7 +33,7 @@
         (click)="conversationClicked.emit(conversation)"
       >
         <div class="picture">
-          <!-- <img src="../../assets/images/noPic.svg" /> -->
+          <img src="../../assets/images/noPic.svg" />
         </div>
         <div class="content">
           <div class="conversationHeader">
@@ -39,14 +41,14 @@
             <div class="time">{{ conversation.time }}</div>
           </div>
           <div class="message">
-            <!-- <img
+            <img
               *ngIf="!conversation.latestMessageRead"
               src="../../assets/images/doubleTick.svg"
             />
             <img
               *ngIf="conversation.latestMessageRead"
               src="../../assets/images/doubleTickBlue.svg"
-            /> -->
+            />
             {{ conversation.latestMessage }}
           </div>
         </div>
