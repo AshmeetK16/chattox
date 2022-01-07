@@ -1,0 +1,50 @@
+.background-header{
+    width: 100vw;
+    height: 35vh;
+    background-color: #00BFA5;
+}
+
+.background-footer{
+    width: 100vw;
+    height: 65vh;
+    background-color: #D6DBD7;
+}
+
+.login-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+
+    .login-input-container{
+        width: 500px;
+        // height: 25rem;
+        padding: 35px 40px;
+        background-color: #fff; 
+        border-radius: 5px;
+        box-shadow: 0 0 20px 0px rgba(0,0,0,0.35);
+
+        .input-container{
+            .input-field{
+                div{
+                    font-weight: 700;
+                }
+
+                input{
+                    width: 100%;
+                    outline: none;
+                    border: 1px solid rgba(0,0,0,0.3);
+                    padding: 8px;
+                    font-size: 15px;
+                    border-radius: 5px;
+                    transition: border 0.2s ease-in-out;
+
+                    &:hover{
+                        border: 1px solid rgba(0,0,0,1);
+                    }
+                }
+            }
+        }
+    }
+}
