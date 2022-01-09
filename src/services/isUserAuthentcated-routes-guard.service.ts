@@ -1,29 +1,19 @@
-// import { Injectable } from '@angular/core';
-// import { CanActivate, Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
 
-// @Injectable()
-// export class isUserAuthentcatedRoutesGuard implements CanActivate {
+import {FirebaseService} from "./authService"
 
-//     constructor(
-//         private router: Router
-//     ) { }
+@Injectable()
+export class isUserAuthentcatedRoutesGuard implements CanActivate {
+    isUserAuthenticated = true;
+    constructor(
+        private router: Router,
+        private firebaseService: FirebaseService
+    ) { }
 
-//     canActivate(): boolean | Promise<boolean> {
-//         return this.authService.getUserDataFromSession().then(userData => {
-//             return this.authService.checkGigyaAndServerSession().then(() => {
-//                 if (userData && userData.role) {
-//                     switch (userData.role) {
-//                         case 'student': this.appHelperService.navigateToDashboardLink(['learner', 'dashboard']); break;
-//                         case 'teacher': this.appHelperService.navigateToDashboardLink(['teacher', 'dashboard']); break;
-//                         case 'admin': this.appHelperService.navigateToAdminLink(['admin', 'dashboard']); break;
-//                         default: this.appHelperService.navigateToOnboardingLink(['home']);
-//                     }
-//                     return true;
-//                 } else {
-//                     this.authService.rurl = window.location.pathname + window.location.search;
-//                     this.authService.navigateToRurl();
-//                 }
-//             });
-//         });
-//     }
-// }
+    canActivate(): boolean | Promise<boolean> {debugger;
+        if (!this.firebaseService.isLoggedIn) {
+            return this.router.navigate(['/login']);
+        }
+    }
+}

@@ -8,18 +8,18 @@
         <div class="input-container">
             <div class="input-field mb-3">
                 <div class="mb-1">Full Name:</div>
-                <input type="email" name="name">
+                <input type="text" [(ngModel)]="name" name="name">
             </div>
             <div class="input-field mb-3">
                 <div class="mb-1">Email:</div>
-                <input type="email" name="email">
+                <input type="email" [(ngModel)]="email" name="email">
             </div>
             <div class="input-field mb-3">
                 <div class="mb-1">Password:</div>
-                <input type="password" name="password">
+                <input type="password" [(ngModel)]="password" name="password">
             </div>
-            <button type="button" class="btn btn-success w-100 mb-1">Sign Up</button>
-            <span><a href="#">Already have an account?</a></span>
+            <button type="button" (click) = 'signUp()' class="btn btn-success w-100 mb-1">Sign Up</button>
+            <span><a href="#" class="login-link" [routerLink]="['/login']">Already have an account?</a></span>
         </div>
     </div>
 </div>

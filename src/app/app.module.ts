@@ -8,7 +8,11 @@ import { ChatContainerComponent } from './chat-container/chat-container.componen
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
+import { HomeComponent } from './home/home.component';
 // import { PickerModule } from '@ctrl/ngx-emoji-mart';
+
+import { isUserAuthentcatedRoutesGuard  } from './../services/isUserAuthentcated-routes-guard.service';
+
 
 @NgModule({
   declarations: [
@@ -16,7 +20,8 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     SidebarComponent,
     ChatContainerComponent,
     LoginComponent,
-    SignUpComponent
+    SignUpComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +29,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
     FormsModule,
     // PickerModule
   ],
-  providers: [],
+  providers: [isUserAuthentcatedRoutesGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

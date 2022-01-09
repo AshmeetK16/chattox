@@ -9,14 +9,14 @@
         <div class="input-container">
             <div class="input-field mb-3">
                 <div class="mb-1">Email:</div>
-                <input type="email" name="email">
+                <input type="email" [(ngModel)]="email" name="email">
             </div>
             <div class="input-field mb-3">
                 <div class="mb-1">Password:</div>
-                <input type="password" name="password">
+                <input type="password" [(ngModel)]="password" name="password">
             </div>
-            <button type="button" class="btn btn-success w-100 mb-1">Log In</button>
-            <span>Need an account? <a href="#">Register</a></span>
+            <button type="button"  (click) = 'signIn()' class="btn btn-success w-100 mb-1">Log In</button>
+            <span>Need an account? <a href="#" class="register" [routerLink]="['/signup']">Register</a></span>
         </div>
     </div>
 </div>

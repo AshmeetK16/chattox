@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { stringify } from 'querystring';
+import { FirebaseService } from "../../services/authService"
 
 @Component({
   selector: 'app-login',
@@ -6,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  email : string;
+  password: string;
 
-  constructor() { }
+  constructor( private firebaseService : FirebaseService) { }
 
   ngOnInit() {
+  }
+
+  signIn(){
+    return this.firebaseService.signIn(this.email,this.password);
   }
 
 }
