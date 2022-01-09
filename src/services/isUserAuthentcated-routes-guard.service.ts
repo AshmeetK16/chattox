@@ -11,9 +11,11 @@ export class isUserAuthentcatedRoutesGuard implements CanActivate {
         private firebaseService: FirebaseService
     ) { }
 
-    canActivate(): boolean | Promise<boolean> {debugger;
+    canActivate(): boolean | Promise<boolean> {
+        // this.firebaseService.isLoggedIn = true;
         if (!this.firebaseService.isLoggedIn) {
             return this.router.navigate(['/login']);
         }
+        return true;
     }
 }

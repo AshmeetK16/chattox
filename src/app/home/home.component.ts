@@ -9,7 +9,7 @@ export class HomeComponent implements OnInit {
   isUSerAuthenticated = true;
   constructor() { }
 
-  ngOnInit() {debugger;
+  ngOnInit() {
   }
 
 }
