@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,8 @@ import {AngularFireAuth} from '@angular/fire/auth';
 export class FirebaseService {
 
   isLoggedIn = false
-  constructor(public firebaseAuth : AngularFireAuth) { }
+  constructor(public firebaseAuth : AngularFireAuth,
+    private router: Router) { }
 
   async signIn(email: string, password : string){
     await this.firebaseAuth.signInWithEmailAndPassword(email,password)
@@ -15,6 +17,7 @@ export class FirebaseService {
       this.isLoggedIn = true;
       console.log(res);
       localStorage.setItem('user',JSON.stringify(res.user));
+      return this.router.navigate(['/home']);
     })
   }
   
@@ -24,6 +27,7 @@ export class FirebaseService {
       this.isLoggedIn = true;
       console.log(res);
       localStorage.setItem('user',JSON.stringify(res.user));
+      return this.router.navigate(['/home']);
     })
   }
   
