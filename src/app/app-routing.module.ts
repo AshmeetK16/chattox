@@ -11,7 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { isUserAuthentcatedRoutesGuard } from '../services/isUserAuthentcated-routes-guard.service';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/home' },
+  { path: '', redirectTo: '/home',pathMatch:'full' },
   { path: 'home', component: HomeComponent, canActivate: [isUserAuthentcatedRoutesGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignUpComponent },
