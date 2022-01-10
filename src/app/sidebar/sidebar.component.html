@@ -2,12 +2,22 @@
     <div id="row1">
       <div id="sidebarHeader">
         <div class="avatarContainer">
-          <img src="../../assets/images/noPic.svg" />
+          <img src="../../assets/images/noPic.svg" alt=""/>
         </div>
         <div class="actionsContainer">
-          <img src="../../assets/images/statusIcon.svg" />
-          <img src="../../assets/images/chatIcon.svg" />
-          <img src="../../assets/images/moreVertIcon.svg" />
+          <img src="../../assets/images/statusIcon.svg" alt=""/>
+          <img src="../../assets/images/chatIcon.svg" alt=""/>
+
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn " id="dropdownMenuButton" ngbDropdownToggle>
+              <img src="../../assets/images/moreVertIcon.svg" alt=""/>
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+              <button ngbDropdownItem>Action</button>
+              <button ngbDropdownItem>Another Action</button>
+              <button ngbDropdownItem>Something else here</button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="searchBoxContainer">

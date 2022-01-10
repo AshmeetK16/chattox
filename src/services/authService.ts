@@ -7,7 +7,9 @@ import { Router } from '@angular/router';
 })
 export class FirebaseService {
 
-  isLoggedIn = false
+  user = JSON.parse(localStorage.getItem('user'));
+  isLoggedIn = this.user ? true : false;
+  
   constructor(public firebaseAuth : AngularFireAuth,
     private router: Router) { }
 
