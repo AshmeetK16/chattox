@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FirebaseService } from "../../services/authService";
 
 @Component({
   selector: 'app-home',
@@ -6,10 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  isUSerAuthenticated = true;
-  constructor() { }
+  isUSerAuthenticated = this.firebaseService.isLoggedIn;
+  conversation;
+
+  constructor(private firebaseService : FirebaseService) { }
 
   ngOnInit() {
+  }
+
+  onConversationSelected(conversation){
+    this.conversation = conversation;
   }
 
 }

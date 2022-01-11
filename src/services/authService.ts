@@ -33,8 +33,10 @@ export class FirebaseService {
     })
   }
   
-  logout(){
+  logout() {
+    this.isLoggedIn = false;
     this.firebaseAuth.signOut();
     localStorage.removeItem('user');
+    return this.router.navigate(['/login']);
   }
 }

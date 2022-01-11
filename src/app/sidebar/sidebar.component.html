@@ -5,19 +5,30 @@
           <img src="../../assets/images/noPic.svg" alt=""/>
         </div>
         <div class="actionsContainer">
-          <img src="../../assets/images/statusIcon.svg" alt=""/>
-          <img src="../../assets/images/chatIcon.svg" alt=""/>
+          <img src="../../assets/images/statusIcon.svg" alt="" class="chat-controls ms-4"/>
+          <img src="../../assets/images/chatIcon.svg" alt="" class="chat-controls ms-4"/>
 
-          <div ngbDropdown class="d-inline-block">
-            <button class="btn " id="dropdownMenuButton" ngbDropdownToggle>
+          <div ngbDropdown class="d-inline-block chat-controls ms-4">
+            <button class="btn dropdown" id="dropdownMenuButton" ngbDropdownToggle>
               <img src="../../assets/images/moreVertIcon.svg" alt=""/>
             </button>
-            <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
-              <button ngbDropdownItem>Action</button>
-              <button ngbDropdownItem>Another Action</button>
-              <button ngbDropdownItem>Something else here</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownMenuButton" class="controls-dropdown-menu">
+              <button ngbDropdownItem>New Group</button>
+              <button ngbDropdownItem>Settings</button>
+              <button ngbDropdownItem (click)='logOut()'>Logout</button>
             </div>
           </div>
+
+          <!-- <li class="nav-item chatControls d-inline-block" ngbDropdown>
+            <a class="nav-link dropdown" tabindex="0" ngbDropdownToggle id="navbarDropdown2" role="button">
+              <img src="../../assets/images/moreVertIcon.svg" alt=""/>
+            </a>
+            <div ngbDropdownMenu aria-labelledby="navbarDropdown2" class="dropdown-menu dropdown-menu-right">
+              <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Action</a>
+              <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Another action</a>
+              <a ngbDropdownItem href="#" (click)="$event.preventDefault()">Something else here</a>
+            </div>
+          </li> -->
         </div>
       </div>
       <div class="searchBoxContainer">

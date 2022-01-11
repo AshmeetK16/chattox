@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from "../../services/authService"
+import { FirebaseService } from "../../services/authService";
 
 @Component({
   selector: 'app-login',
