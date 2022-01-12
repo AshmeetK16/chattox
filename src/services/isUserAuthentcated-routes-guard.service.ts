@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 
-import {FirebaseService} from "./authService"
+import {AuthService} from "./authService"
 
 @Injectable()
 export class isUserAuthentcatedRoutesGuard implements CanActivate {
     isUserAuthenticated = true;
     constructor(
         private router: Router,
-        private firebaseService: FirebaseService
+        private authService: AuthService
     ) { }
 
     canActivate(): boolean | Promise<boolean> {
-        // this.firebaseService.isLoggedIn = true;
-        if (!this.firebaseService.isLoggedIn) {
+        if (!this.authService.isLoggedIn) {
             return this.router.navigate(['/login']);
         }
         return true;

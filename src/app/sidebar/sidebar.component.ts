@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FirebaseService } from "../../services/authService";
+import { AuthService } from "../../services/authService";
 
 @Component({
   selector: 'app-sidebar',
@@ -193,11 +193,11 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  constructor(private firebaseService : FirebaseService) {}
+  constructor(private authService : AuthService) {}
 
   ngOnInit(): void { }
   
   logOut() {
-    return this.firebaseService.logout();
+    return this.authService.logout();
   }
 }
