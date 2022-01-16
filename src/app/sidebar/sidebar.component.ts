@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from "../../services/authService";
 
 @Component({
@@ -8,6 +8,7 @@ import { AuthService } from "../../services/authService";
 })
 export class SidebarComponent implements OnInit {
   @Output() conversationClicked: EventEmitter<any> = new EventEmitter();
+  @Input() allUsers;
   searchText: string;
   conversations = [
     {
@@ -195,7 +196,9 @@ export class SidebarComponent implements OnInit {
 
   constructor(private authService : AuthService) {}
 
-  ngOnInit(): void { }
+  ngOnInit() {
+    console.log(this.allUsers);
+  }
   
   logOut() {
     return this.authService.logout();

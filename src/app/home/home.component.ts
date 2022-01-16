@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from "../../services/authService";
+import { FirebaseService } from "../../services/firebase";
 
 @Component({
   selector: 'app-home',
@@ -9,10 +10,18 @@ import { AuthService } from "../../services/authService";
 export class HomeComponent implements OnInit {
   isUSerAuthenticated = this.authService.isLoggedIn;
   conversation;
+  allUsers: any = [];
 
-  constructor(private authService : AuthService) { }
+  constructor(private authService : AuthService,
+    private firebaseService : FirebaseService) { }
 
   ngOnInit() {
+    this.firebaseService.getAllUsers().subscribe((res) => {
+      return res.map((userData) => {
+        this.allUsers.push(userData.payload.doc.data());
+      })
+    });
+    
   }
 
   onConversationSelected(conversation){

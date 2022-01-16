@@ -14,4 +14,8 @@ export class FirebaseService {
     getUser(userId) {
         return this.fireServices.collection('Users').doc(userId).snapshotChanges();
     }
+
+    getAllUsers() {
+        return this.fireServices.collection('Users').snapshotChanges();
+    }
 }

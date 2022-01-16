@@ -19,7 +19,7 @@ export class AuthService {
     .then(res=>{
       this.isLoggedIn = true;
       this.firebaseService.getUser(res.user.uid).subscribe(res => {
-        let userData = res.payload.data();
+        const userData = res.payload.data();
         localStorage.setItem('user',JSON.stringify(userData));
         return this.router.navigate(['/home']);
       });
@@ -30,7 +30,7 @@ export class AuthService {
     await this.firebaseAuth.createUserWithEmailAndPassword(signUpData.email,signUpData.password)
     .then(res=>{
       this.isLoggedIn = true;
-      let userData = { userId: res.user.uid, userName: signUpData.username, email: signUpData.email };
+      const userData = { userId: res.user.uid, userName: signUpData.username, email: signUpData.email };
       this.firebaseService.createUser(userData);
       localStorage.setItem('user',JSON.stringify(userData));
       return this.router.navigate(['/home']);

@@ -1,5 +1,5 @@
 <div id="chatContainer" *ngIf="isUSerAuthenticated">
-  <app-sidebar (conversationClicked)="onConversationSelected($event)"></app-sidebar>
+  <app-sidebar (conversationClicked)="onConversationSelected($event)" [allUsers]="allUsers"></app-sidebar>
   <div id="chat">
     <app-chat-container [conversation]="conversation" *ngIf="conversation"></app-chat-container>
   </div>
