@@ -9,6 +9,7 @@ import { FirebaseService } from './../services/firebase';
 export class AuthService {
 
   user = JSON.parse(localStorage.getItem('user'));
+  userStatus = "Hey there! I am using WhatsApp."
   isLoggedIn = this.user ? true : false;
   
   constructor(public firebaseAuth : AngularFireAuth,
@@ -30,7 +31,7 @@ export class AuthService {
     await this.firebaseAuth.createUserWithEmailAndPassword(signUpData.email,signUpData.password)
     .then(res=>{
       this.isLoggedIn = true;
-      const userData = { userId: res.user.uid, userName: signUpData.username, email: signUpData.email };
+      const userData = { userId: res.user.uid, userName: signUpData.username, email: signUpData.email, userStatus: this.userStatus };
       this.firebaseService.createUser(userData);
       localStorage.setItem('user',JSON.stringify(userData));
       return this.router.navigate(['/home']);
