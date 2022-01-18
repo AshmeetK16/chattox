@@ -79,17 +79,17 @@
 
     <div id="sidebarContent">
       <div class="conversation" *ngFor="
-              let conversation of !searchText ? allUsers : filteredConversations
-            " (click)="conversationClicked.emit(conversation)">
+              let selectedUser of !searchText ? allUsers : filteredConversations
+            " (click)="conversationClicked.emit(selectedUser)">
         <div class="picture">
           <img src="../../assets/images/noPic.svg" />
         </div>
         <div class="content">
           <div class="conversationHeader">
-            <div class="name">{{ conversation.userName }}</div>
-            <div class="time">{{ conversation.time }}</div>
+            <div class="name">{{ selectedUser.userName }}</div>
+            <div class="time">{{ selectedUser.time }}</div>
           </div>
-          <p class="user-status mb-0">{{ conversation.userStatus }}</p>
+          <p class="user-status mb-0">{{ selectedUser.userStatus }}</p>
           <!-- <div class="message">
             <img *ngIf="!conversation.latestMessageRead" src="../../assets/images/doubleTick.svg" />
             <img *ngIf="conversation.latestMessageRead" src="../../assets/images/doubleTickBlue.svg" />

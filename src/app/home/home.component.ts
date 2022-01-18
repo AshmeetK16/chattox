@@ -9,7 +9,7 @@ import { FirebaseService } from "../../services/firebase";
 })
 export class HomeComponent implements OnInit {
   isUSerAuthenticated = this.authService.isLoggedIn;
-  conversation;
+  selectedUser;
   allUsers: any = [];
 
   constructor(private authService : AuthService,
@@ -24,8 +24,8 @@ export class HomeComponent implements OnInit {
     
   }
 
-  onConversationSelected(conversation){
-    this.conversation = conversation;
+  onConversationSelected(selectedUser){
+    this.selectedUser = selectedUser;
   }
 
 }

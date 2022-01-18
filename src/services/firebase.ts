@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import * as uuid from '../../node_modules/uuid';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,5 +18,13 @@ export class FirebaseService {
 
     getAllUsers() {
         return this.fireServices.collection('Users').snapshotChanges();
+    }
+
+    createMessage(messageData, selectedUser){
+        let currentUserData = JSON.parse(localStorage.getItem('user'));
+        let conversationData = {
+            [selectedUser.userId] : {[uuid.v4()] : messageData} 
+        }
+        return this.fireServices.collection('Messages').doc(currentUserData.uid).set(conversationData);
     }
 }
