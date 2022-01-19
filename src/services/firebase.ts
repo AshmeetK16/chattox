@@ -20,11 +20,19 @@ export class FirebaseService {
         return this.fireServices.collection('Users').snapshotChanges();
     }
 
-    createMessage(messageData, selectedUser){
+    createMessage(messageData, selectedUser) {
         let currentUserData = JSON.parse(localStorage.getItem('user'));
+        const randomMessageId = uuid.v4();
+
         let conversationData = {
-            [selectedUser.userId] : {[uuid.v4()] : messageData} 
+            [selectedUser.userId]: { [randomMessageId] : messageData }
         }
-        return this.fireServices.collection('Messages').doc(currentUserData.uid).set(conversationData);
+        // this.fireServices.collection('Messages').doc(currentUserData.userId).set(conversationData)
+        this.fireServices.collection('Messages/' + currentUserData.userId).doc(selectedUser.user).update(conversationData)
+
+        // conversationData = { 
+        //     [currentUserData.userId]: { [randomMessageId] : messageData }
+        // };
+        // this.fireServices.collection('Messages').doc(selectedUser.userId).set(conversationData);
     }
 }
