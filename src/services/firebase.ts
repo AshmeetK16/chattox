@@ -24,15 +24,8 @@ export class FirebaseService {
         let currentUserData = JSON.parse(localStorage.getItem('user'));
         const randomMessageId = uuid.v4();
 
-        let conversationData = {
-            [selectedUser.userId]: { [randomMessageId] : messageData }
-        }
-        // this.fireServices.collection('Messages').doc(currentUserData.userId).set(conversationData)
-        this.fireServices.collection('Messages/' + currentUserData.userId).doc(selectedUser.user).update(conversationData)
+        this.fireServices.collection('Messages').doc(currentUserData.userId).collection(selectedUser.userId).doc(randomMessageId).set(messageData);
 
-        // conversationData = { 
-        //     [currentUserData.userId]: { [randomMessageId] : messageData }
-        // };
-        // this.fireServices.collection('Messages').doc(selectedUser.userId).set(conversationData);
+        this.fireServices.collection('Messages').doc(selectedUser.userId).collection(currentUserData.userId).doc(randomMessageId).set(messageData);
     }
 }

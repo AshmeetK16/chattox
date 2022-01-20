@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FirebaseService } from "../../services/firebase";
 import { AngularFirestore } from '@angular/fire/firestore';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-chat-container',
@@ -12,13 +13,16 @@ export class ChatContainerComponent implements OnInit {
   @Output() onSubmit: EventEmitter<any> = new EventEmitter();
   // emojiPickerVisible;
   message = '';
-  constructor(private firebaseService : FirebaseService, public fireServices: AngularFirestore) {
-    fireServices.collection('Messages').valueChanges().subscribe((data) =>{
-      console.log(data)
+  messages = [];
+  currentUserData = JSON.parse(localStorage.getItem('user'));
+
+  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore) { console.log(this.currentUserData)}
+
+  ngOnInit(): void {
+    this.fireServices.collection('Messages').doc(this.currentUserData.userId).collection(this.selectedUser.userId, ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
+      this.messages = data;
     })
   }
-
-  ngOnInit(): void { }
 
   submitMessage(event) {
     let value = event.target.value.trim();
@@ -34,7 +38,7 @@ export class ChatContainerComponent implements OnInit {
 
     let messageData = {
       message: value,
-      user: JSON.parse(localStorage.getItem('user')).userId,
+      user: this.currentUserData.userId,
       timestamp: new Date().getTime()
     }
 
