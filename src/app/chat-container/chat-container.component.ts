@@ -18,7 +18,7 @@ export class ChatContainerComponent implements OnInit {
 
   constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore) { console.log(this.currentUserData)}
 
-  ngOnInit(): void {
+  ngOnInit(): void { debugger
     this.fireServices.collection('Messages').doc(this.currentUserData.userId).collection(this.selectedUser.userId, ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
       this.messages = data;
     })
@@ -39,7 +39,7 @@ export class ChatContainerComponent implements OnInit {
     let messageData = {
       message: value,
       user: this.currentUserData.userId,
-      timestamp: new Date().getTime()
+      timestamp: new Date(new Date().getTime())
     }
 
     this.firebaseService.createMessage(messageData, this.selectedUser);

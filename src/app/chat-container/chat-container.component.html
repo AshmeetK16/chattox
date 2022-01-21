@@ -15,11 +15,12 @@
     <div id="body">
       <div
         class="message"
+        [ngClass]="{ 'me' : message.user === currentUserData.userId}"
         *ngFor="let message of messages"
       >
         <div class="messageContent">
           {{ message.message }}
-          <div class="time">{{ message.timestamp }}</div>
+          <div class="time">{{ message.timestamp * 1000 | date: 'hh:mm' }}</div>
         </div>
       </div>
       <!-- <div
