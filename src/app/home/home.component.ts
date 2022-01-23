@@ -15,13 +15,14 @@ export class HomeComponent implements OnInit {
   constructor(private authService : AuthService,
     private firebaseService : FirebaseService) { }
 
-  ngOnInit() {
+  ngOnInit() { 
     this.firebaseService.getAllUsers().subscribe((res) => {
       return res.map((userData) => {
-        this.allUsers.push(userData.payload.doc.data());
+        if(userData.payload.doc.data()['userId'] !== JSON.parse(localStorage.getItem('user')).userId)
+          this.allUsers.push(userData.payload.doc.data());
       })
     });
-    
+
   }
 
   onConversationSelected(selectedUser){
