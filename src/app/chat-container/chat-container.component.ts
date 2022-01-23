@@ -16,9 +16,15 @@ export class ChatContainerComponent implements OnInit {
   messages = [];
   currentUserData = JSON.parse(localStorage.getItem('user'));
 
-  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore) { console.log(this.currentUserData)}
+  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore) { 
+    if(this.selectedUser){
+      console.log(this.selectedUser);
+    }
+  }
 
-  ngOnInit(): void { debugger
+  ngOnInit(): void {}
+
+  ngOnChanges(): void{
     this.fireServices.collection('Messages').doc(this.currentUserData.userId).collection(this.selectedUser.userId, ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
       this.messages = data;
     })

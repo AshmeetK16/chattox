@@ -12,20 +12,29 @@ export class HomeComponent implements OnInit {
   selectedUser;
   allUsers: any = [];
 
-  constructor(private authService : AuthService,
-    private firebaseService : FirebaseService) { }
+  constructor(private authService: AuthService,
+    private firebaseService: FirebaseService) { }
 
-  ngOnInit() { 
+  ngOnInit() {
     this.firebaseService.getAllUsers().subscribe((res) => {
       return res.map((userData) => {
-        if(userData.payload.doc.data()['userId'] !== JSON.parse(localStorage.getItem('user')).userId)
+        if (userData.payload.doc.data()['userId'] !== JSON.parse(localStorage.getItem('user')).userId)
           this.allUsers.push(userData.payload.doc.data());
       })
     });
 
+    this.firebaseService.getAllConversations().subscribe(res => {debugger;
+      return res.map((user) => {
+        console.log(user.payload.doc.data())
+      })
+      // return res.map((userData) => {
+      //   this.allUsers.push(userData.payload.doc.data());
+      // })
+    })
+
   }
 
-  onConversationSelected(selectedUser){
+  onConversationSelected(selectedUser) {
     this.selectedUser = selectedUser;
   }
 

@@ -5,6 +5,7 @@ import * as uuid from '../../node_modules/uuid';
   providedIn: 'root'
 })
 export class FirebaseService {
+    currentUserData = JSON.parse(localStorage.getItem('user'));
 
     constructor(public fireServices : AngularFirestore) { }
 
@@ -21,11 +22,14 @@ export class FirebaseService {
     }
 
     createMessage(messageData, selectedUser) {
-        let currentUserData = JSON.parse(localStorage.getItem('user'));
         const randomMessageId = uuid.v4();
 
-        this.fireServices.collection('Messages').doc(currentUserData.userId).collection(selectedUser.userId).doc(randomMessageId).set(messageData);
+        this.fireServices.collection('Messages').doc(this.currentUserData.userId).collection(selectedUser.userId).doc(randomMessageId).set(messageData);
 
-        this.fireServices.collection('Messages').doc(selectedUser.userId).collection(currentUserData.userId).doc(randomMessageId).set(messageData);
+        this.fireServices.collection('Messages').doc(selectedUser.userId).collection(this.currentUserData.userId).doc(randomMessageId).set(messageData);
+    }
+
+    getAllConversations() { 
+        return this.fireServices.collection('Messages').snapshotChanges();
     }
 }
