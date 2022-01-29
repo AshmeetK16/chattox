@@ -81,7 +81,7 @@
       <div class="conversation" *ngFor="
               let selectedUser of !searchText ? allUsers : filteredConversations
             " (click)="conversationClicked.emit(selectedUser)">
-        <div class="picture">
+        <div class="picture me-1">
           <img src="../../assets/images/noPic.svg" />
         </div>
         <div class="content">
