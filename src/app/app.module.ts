@@ -10,7 +10,7 @@ import { FormsModule } from "@angular/forms";
 import { LoginComponent } from "./login/login.component";
 import { SignUpComponent } from "./sign-up/sign-up.component";
 import { HomeComponent } from "./home/home.component";
-// import { PickerModule } from '@ctrl/ngx-emoji-mart';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 import { firebaseConfig } from "../services/config";
 import { isUserAuthentcatedRoutesGuard } from "./../services/isUserAuthentcated-routes-guard.service";
@@ -38,7 +38,7 @@ import { AngularFireDatabaseModule } from "@angular/fire/database";
     AngularFirestoreModule,
     AngularFireDatabaseModule,
     NgbModule,
-    // PickerModule
+    PickerModule
   ],
   providers: [isUserAuthentcatedRoutesGuard, AuthService, FirebaseService],
   bootstrap: [AppComponent],

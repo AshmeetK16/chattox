@@ -11,6 +11,7 @@ export class HomeComponent implements OnInit {
   isUSerAuthenticated = this.authService.isLoggedIn;
   selectedUser;
   allUsers: any = [];
+  allConversations: any = [];
 
   constructor(private authService: AuthService,
     private firebaseService: FirebaseService) { }
@@ -23,15 +24,12 @@ export class HomeComponent implements OnInit {
       })
     });
 
-    this.firebaseService.getAllConversations().subscribe(res => {debugger;
-      return res.map((user) => {
-        console.log(user.payload.doc.data())
+    this.firebaseService.getAllConversations().subscribe(res => {
+      this.allConversations = [];
+      return res.map((userData) => {
+        this.allConversations.push(userData.payload.doc.data());
       })
-      // return res.map((userData) => {
-      //   this.allUsers.push(userData.payload.doc.data());
-      // })
     })
-
   }
 
   onConversationSelected(selectedUser) {

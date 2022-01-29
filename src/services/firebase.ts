@@ -24,12 +24,39 @@ export class FirebaseService {
     createMessage(messageData, selectedUser) {
         const randomMessageId = uuid.v4();
 
-        this.fireServices.collection('Messages').doc(this.currentUserData.userId).collection(selectedUser.userId).doc(randomMessageId).set(messageData);
+        const currentUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(selectedUser.userId);
+        const selectedUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(selectedUser.userId).collection('Conversations').doc(this.currentUserData.userId);
 
-        this.fireServices.collection('Messages').doc(selectedUser.userId).collection(this.currentUserData.userId).doc(randomMessageId).set(messageData);
+        let latestMessageData = {
+            message : messageData.message,
+            timestamp : messageData.timestamp
+        }
+
+        selectedUser['latestMessageData'] = latestMessageData;
+
+        currentUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);    
+        currentUserFirebaseRef.get().subscribe(res => {
+            if(!res.data()){
+                currentUserFirebaseRef.set(selectedUser);
+            }
+            else {
+                currentUserFirebaseRef.update({latestMessageData : latestMessageData});
+            }
+        })
+
+        selectedUserFirebaseRef.get().subscribe(res => {
+            if(!res.data()){
+                selectedUserFirebaseRef.set(selectedUser);
+            }
+            else {
+                selectedUserFirebaseRef.update(latestMessageData);
+            }
+        })   
+
+        selectedUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
     }
 
     getAllConversations() { 
-        return this.fireServices.collection('Messages').snapshotChanges();
+        return this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').snapshotChanges();
     }
 }

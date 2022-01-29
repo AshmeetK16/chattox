@@ -11,7 +11,7 @@ import { JsonPipe } from '@angular/common';
 export class ChatContainerComponent implements OnInit {
   @Input() selectedUser;
   @Output() onSubmit: EventEmitter<any> = new EventEmitter();
-  // emojiPickerVisible;
+  emojiPickerVisible; 
   message = '';
   messages = [];
   currentUserData = JSON.parse(localStorage.getItem('user'));
@@ -25,8 +25,9 @@ export class ChatContainerComponent implements OnInit {
   ngOnInit(): void {}
 
   ngOnChanges(): void{
-    this.fireServices.collection('Messages').doc(this.currentUserData.userId).collection(this.selectedUser.userId, ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
-      this.messages = data;
+    this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedUser.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
+      this.messages = data
+
     })
   }
 

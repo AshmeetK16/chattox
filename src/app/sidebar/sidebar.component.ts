@@ -9,6 +9,7 @@ import { AuthService } from "../../services/authService";
 export class SidebarComponent implements OnInit {
   @Output() conversationClicked: EventEmitter<any> = new EventEmitter();
   @Input() allUsers;
+  @Input() allConversations;
   searchText: string;
   conversations = [
     {
@@ -197,7 +198,7 @@ export class SidebarComponent implements OnInit {
   constructor(private authService : AuthService) {}
 
   ngOnInit() {
-    console.log(this.allUsers);
+    console.log(this.allConversations);
   }
   
   logOut() {

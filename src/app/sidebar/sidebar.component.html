@@ -35,23 +35,23 @@
 
     <div id="sidebarContent">
       <!-- <div id="noConversations">All chats are archived</div> -->
-
-      <div class="conversation" *ngFor="
-            let conversation of !searchText ? conversations : filteredConversations
+      <div class="conversation ps-3" *ngFor="
+            let conversation of !searchText ? allConversations : filteredConversations
           " (click)="conversationClicked.emit(conversation)">
-        <div class="picture">
+        <div class="picture me-1">
           <img src="../../assets/images/noPic.svg" />
         </div>
         <div class="content">
           <div class="conversationHeader">
-            <div class="name">{{ conversation.name }}</div>
-            <div class="time">{{ conversation.time }}</div>
+            <div class="name">{{ conversation.userName }}</div>
+            <div class="time">{{ conversation.latestMessageData.timestamp * 1000 | date: 'hh:mm' }}</div>
           </div>
-          <div class="message">
+          <p class="user-status mb-0">{{ conversation.latestMessageData.message }}</p>
+          <!-- <div class="message">
             <img *ngIf="!conversation.latestMessageRead" src="../../assets/images/doubleTick.svg" />
             <img *ngIf="conversation.latestMessageRead" src="../../assets/images/doubleTickBlue.svg" />
             {{ conversation.latestMessage }}
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
