@@ -16,18 +16,14 @@ export class ChatContainerComponent implements OnInit {
   messages = [];
   currentUserData = JSON.parse(localStorage.getItem('user'));
 
-  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore) { 
-    if(this.selectedUser){
-      console.log(this.selectedUser);
-    }
-  }
+
+  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore) { }
 
   ngOnInit(): void {}
 
   ngOnChanges(): void{
     this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedUser.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
       this.messages = data
-
     })
   }
 
@@ -35,13 +31,6 @@ export class ChatContainerComponent implements OnInit {
     let value = event.target.value.trim();
     this.message = '';
     if (value.length < 1) return false;
-    // this.conversation.latestMessage = value;
-    // this.conversation.messages.unshift({
-    //   id: 1,
-    //   body: value,
-    //   time: '10:21',
-    //   me: true,
-    // });
 
     let messageData = {
       message: value,

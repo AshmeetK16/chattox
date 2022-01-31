@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from "../../services/authService";
 import { FirebaseService } from "../../services/firebase";
 
@@ -35,5 +35,4 @@ export class HomeComponent implements OnInit {
   onConversationSelected(selectedUser) {
     this.selectedUser = selectedUser;
   }
-
 }

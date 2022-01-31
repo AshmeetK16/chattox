@@ -8,8 +8,8 @@
         <div class="actionsContainer">
           <img src="../../assets/images/statusIcon.svg" alt="" class="chat-controls ms-4" />
 
-          <button class="btn ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample1"
-            aria-expanded="false" aria-controls="collapseExample">
+          <button class="btn ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#newChatCollapse"
+            aria-expanded="false" aria-controls="collapseExample" (click)="updateView('newChat')">
             <img src="../../assets/images/chatIcon.svg" alt="" class="chat-controls" />
           </button>
 
@@ -18,7 +18,8 @@
               <img src="../../assets/images/moreVertIcon.svg" alt="" />
             </button>
             <div ngbDropdownMenu aria-labelledby="dropdownMenuButton" class="controls-dropdown-menu">
-              <button ngbDropdownItem>New Group</button>
+              <button ngbDropdownItem (click)="updateView('newGroup')" type="button" data-bs-toggle="collapse" data-bs-target="#newGroupCollapse"
+              aria-expanded="false" aria-controls="collapseExample">New Group</button>
               <button ngbDropdownItem>Settings</button>
               <button ngbDropdownItem (click)='logOut()'>Logout</button>
             </div>
@@ -34,34 +35,15 @@
     </div>
 
     <div id="sidebarContent">
-      <!-- <div id="noConversations">All chats are archived</div> -->
-      <div class="conversation ps-3" *ngFor="
-            let conversation of !searchText ? allConversations : filteredConversations
-          " (click)="conversationClicked.emit(conversation)">
-        <div class="picture me-1">
-          <img src="../../assets/images/noPic.svg" />
-        </div>
-        <div class="content">
-          <div class="conversationHeader">
-            <div class="name">{{ conversation.userName }}</div>
-            <div class="time">{{ conversation.latestMessageData.timestamp * 1000 | date: 'hh:mm' }}</div>
-          </div>
-          <p class="user-status mb-0">{{ conversation.latestMessageData.message }}</p>
-          <!-- <div class="message">
-            <img *ngIf="!conversation.latestMessageRead" src="../../assets/images/doubleTick.svg" />
-            <img *ngIf="conversation.latestMessageRead" src="../../assets/images/doubleTickBlue.svg" />
-            {{ conversation.latestMessage }}
-          </div> -->
-        </div>
-      </div>
+      <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allConversations}"></ng-container>
     </div>
   </div>
 
-  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" id="collapseExample1">
+  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" id="newChatCollapse">
     <div id="row1">
       <div id="sidebarHeader">
         <div class="actionsContainer">
-          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample1"
+          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newChatCollapse"
             aria-expanded="false" aria-controls="collapseExample">
             <i class="fa fa-arrow-left" aria-hidden="true"></i>
           </button>
@@ -78,18 +60,51 @@
     </div>
 
     <div id="sidebarContent">
-      <div class="conversation" *ngFor="
-              let selectedUser of !searchText ? allUsers : filteredConversations
-            " (click)="conversationClicked.emit(selectedUser)">
+      <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allUsers}"></ng-container>
+    </div>
+  </div>
+
+  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" id="newGroupCollapse">
+    <div id="row1">
+      <div id="sidebarHeader">
+        <div class="actionsContainer">
+          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newGroupCollapse"
+            aria-expanded="false" aria-controls="collapseExample">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          </button>
+
+          <p class="mb-0">New Group</p>
+        </div>
+      </div>
+      <div class="searchBoxContainer">
+        <div id="searchBox">
+          <img width="19" src="../../assets/images/searchIcon.svg" />
+          <input [(ngModel)]="searchText" type="text" placeholder="Search or start the new chat" />
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebarContent">
+      <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allUsers}"></ng-container>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #UsersListContainer let-users='users'>
+  <div class="conversation" *ngFor="
+              let clickedUser of !searchText ? users : filteredConversations
+            " (click)="conversationClicked.emit(clickedUser)">
         <div class="picture me-1">
           <img src="../../assets/images/noPic.svg" />
         </div>
         <div class="content">
           <div class="conversationHeader">
-            <div class="name">{{ selectedUser.userName }}</div>
-            <div class="time">{{ selectedUser.time }}</div>
+            <div class="name">{{ clickedUser?.userName }}</div>
+            <div class="time" *ngIf="views.recentChatsView">{{ clickedUser?.latestMessageData?.timestamp * 1000 | date: 'hh:mm' }}</div>
           </div>
-          <p class="user-status mb-0">{{ selectedUser.userStatus }}</p>
+          <p class="user-status mb-0" *ngIf="!views.recentChatsView">{{ clickedUser?.userStatus }}</p>
+          <p class="user-status mb-0" *ngIf="views.recentChatsView">{{ clickedUser?.latestMessageData?.message }}</p>
           <!-- <div class="message">
             <img *ngIf="!conversation.latestMessageRead" src="../../assets/images/doubleTick.svg" />
             <img *ngIf="conversation.latestMessageRead" src="../../assets/images/doubleTickBlue.svg" />
@@ -97,7 +112,4 @@
           </div> -->
         </div>
       </div>
-    </div>
-  </div>
-
-</div>
+</ng-template>
