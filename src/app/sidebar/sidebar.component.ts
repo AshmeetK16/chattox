@@ -16,6 +16,7 @@ export class SidebarComponent implements OnInit {
     newChatView: false,
     newGroupView: false
   }
+  newGroupData: any = [];
 
   get filteredConversations() {
     return this.allConversations.filter((conversation) => {
@@ -54,6 +55,19 @@ export class SidebarComponent implements OnInit {
       default : {
         this.views.recentChatsView = true;
       }
+    }
+  }
+
+  handleConversationClick(clickedUser) {
+    if (!this.views.newGroupView) {
+      this.conversationClicked.emit(clickedUser);
+    }
+  }
+
+  newGroupHandling(clickedUser) {
+    this.newGroupData = [];
+    if (this.views.newGroupView) {
+      this.newGroupData.push(clickedUser);
     }
   }
 }

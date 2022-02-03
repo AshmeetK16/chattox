@@ -135,6 +135,8 @@
       overflow: auto;
       height: 100%;
       background-color: #fff;
+      display: flex;
+      flex-direction: column;
   
       .conversation {
         display: flex;
@@ -189,6 +191,12 @@
             text-overflow: ellipsis;
           }
         }
+      }
+
+      .add-members-group {
+        width: 60px;
+        align-self: center;
+        margin-top: 16px;
       }
     }
   }
