@@ -93,7 +93,7 @@
       <div class="all-conversations">
         <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allUsers}"></ng-container>
       </div>
-      <button type="button" class="btn btn-success add-members-group" *ngIf="views.newGroupView && this.newGroupData.length>0">Add</button>
+      <button type="button" class="btn btn-success add-members-group" *ngIf="views.newGroupView && this.newGroupData.length>0" (click)="createGroup()">Add</button>
     </div>
   </div>
 </div>
@@ -103,7 +103,7 @@
   <div class="conversation" *ngFor="
               let clickedUser of !searchText ? users : filteredConversations
             " (click)="handleConversationClick(clickedUser)">
-    <div class="form-check me-1" *ngIf="views.newGroupView" (click)="newGroupHandling(clickedUser)">
+    <div class="form-check me-1" *ngIf="views.newGroupView" (click)="newGroupHandling(clickedUser, $event)">
       <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
       <label class="form-check-label" for="flexCheckDefault">
       </label>

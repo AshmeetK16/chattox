@@ -64,10 +64,16 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  newGroupHandling(clickedUser) {
-    this.newGroupData = [];
+  newGroupHandling(clickedUser, event) {
+    // this.newGroupData = [];
     if (this.views.newGroupView) {
-      this.newGroupData.push(clickedUser);
+      if (event.target.checked) {
+        this.newGroupData.push(clickedUser);
+      }
     }
+  }
+
+  createGroup() {
+    this.newGroupData = [];
   }
 }
