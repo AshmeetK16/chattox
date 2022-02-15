@@ -18,9 +18,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.firebaseService.getAllUsers().subscribe((res) => {
-      return res.map((userData) => {
-        if (userData.payload.doc.data()['userId'] !== JSON.parse(localStorage.getItem('user')).userId)
-          this.allUsers.push(userData.payload.doc.data());
+      return res.docs.map((userData) => {
+        if (userData.data()['userId'] !== JSON.parse(localStorage.getItem('user')).userId)
+          this.allUsers.push(userData.data());
       })
     });
 

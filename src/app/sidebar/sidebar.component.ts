@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AuthService } from "../../services/authService";
+import { FirebaseService } from "../../services/firebase";
+import * as uuid from '../../../node_modules/uuid';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,12 +13,14 @@ export class SidebarComponent implements OnInit {
   @Input() allUsers;
   @Input() allConversations;
   searchText: string;
+  groupName: string = "";
+  currentUserData = JSON.parse(localStorage.getItem('user'));
   views = {
     recentChatsView: true,
     newChatView: false,
     newGroupView: false
   }
-  newGroupData: any = [];
+  usersPresentInGroup: any = [];
 
   get filteredConversations() {
     return this.allConversations.filter((conversation) => {
@@ -28,7 +32,7 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  constructor(private authService : AuthService) {}
+  constructor(private authService : AuthService, private firebaseService: FirebaseService) {}
 
   ngOnInit() {
     console.log(this.allConversations);
@@ -68,12 +72,26 @@ export class SidebarComponent implements OnInit {
     // this.newGroupData = [];
     if (this.views.newGroupView) {
       if (event.target.checked) {
-        this.newGroupData.push(clickedUser);
+        this.usersPresentInGroup.push(clickedUser.userId);
       }
     }
   }
 
+  emojiClicked(event) {
+    this.groupName += event.emoji.native;
+  }
+
   createGroup() {
-    this.newGroupData = [];
+    this.usersPresentInGroup.push(this.currentUserData.userId);
+    
+    const groupData = {
+      adminId : this.currentUserData.userId,
+      groupId : uuid.v4(),
+      groupName: this.groupName,
+      users : this.usersPresentInGroup
+    }
+
+    this.firebaseService.createGroup(groupData)
+    this.usersPresentInGroup = [];
   }
 }

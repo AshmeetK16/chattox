@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FirebaseService } from "../../services/firebase";
 import { AngularFirestore } from '@angular/fire/firestore';
-import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-chat-container',

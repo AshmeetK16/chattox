@@ -18,7 +18,7 @@ export class FirebaseService {
     }
 
     getAllUsers() {
-        return this.fireServices.collection('Users').snapshotChanges();
+        return this.fireServices.collection('Users').get();
     }
 
     createMessage(messageData, selectedUser) {
@@ -58,5 +58,20 @@ export class FirebaseService {
 
     getAllConversations() { 
         return this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').snapshotChanges();
+    }
+
+    createGroup(groupData){
+        groupData.users.forEach(userId => {
+            this.fireServices.collection('Users').doc(userId).get().subscribe(res => {
+                const userData = res.data();
+                const groups = userData.groups ? [...userData.groups, groupData.groupId] : [groupData.groupId]; 
+                
+                this.fireServices.collection('Users').doc(userData.userId).update({
+                    groups : groups
+                })    
+            })
+        });
+        
+        this.fireServices.collection('Groups').doc(groupData.groupId).set(groupData);
     }
 }

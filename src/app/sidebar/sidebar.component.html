@@ -1,5 +1,5 @@
 <div class="sidebar-wrapper">
-  <div class="chat-sidebar">
+  <div class="chat-sidebar" *ngIf="views.recentChatsView">
     <div id="row1">
       <div id="sidebarHeader">
         <div class="avatarContainer">
@@ -41,11 +41,11 @@
     </div>
   </div>
 
-  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" id="newChatCollapse">
+  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" *ngIf="views.newChatView" id="newChatCollapse">
     <div id="row1">
       <div id="sidebarHeader">
         <div class="actionsContainer">
-          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newChatCollapse"
+          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newChatCollapse" (click) = "updateView()"
             aria-expanded="false" aria-controls="collapseExample">
             <i class="fa fa-arrow-left" aria-hidden="true"></i>
           </button>
@@ -66,11 +66,11 @@
     </div>
   </div>
 
-  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" id="newGroupCollapse">
+  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" *ngIf="views.newGroupView" id="newGroupCollapse">
     <div id="row1">
       <div id="sidebarHeader">
         <div class="actionsContainer">
-          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newGroupCollapse"
+          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newGroupCollapse" (click) = "updateView()"
             aria-expanded="false" aria-controls="collapseExample">
             <i class="fa fa-arrow-left" aria-hidden="true"></i>
           </button>
@@ -93,13 +93,30 @@
       <div class="all-conversations">
         <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allUsers}"></ng-container>
       </div>
-      <button type="button" class="btn btn-success add-members-group" *ngIf="views.newGroupView && this.newGroupData.length>0" (click)="createGroup()">Add</button>
+      <button type="button" class="btn btn-success add-members-group" *ngIf="views.newGroupView && this.usersPresentInGroup.length>0" (click)="createGroup()"><i class="fa fa-plus" aria-hidden="true"></i></button>
     </div>
   </div>
 </div>
 
 
 <ng-template #UsersListContainer let-users='users'>
+  <div *ngIf="views.newGroupView" class="group-input">
+    <input  [(ngModel)]="groupName" type="text" placeholder="Enter group name" />
+    <div class="smiley-icon">
+      <!-- <img
+        (click)="emojiPickerVisible = !emojiPickerVisible"
+        src="../../assets/images/smileIcon.svg"
+        alt = ""
+      /> -->
+      <i class="fa fa-smile-o" (click)="emojiPickerVisible = !emojiPickerVisible" aria-hidden="true"></i>
+      <emoji-mart
+        (emojiClick)="emojiClicked($event)"
+        *ngIf="emojiPickerVisible"
+        style="position: absolute; top: 35px; right: 0;"
+        [darkMode]="false"
+      ></emoji-mart>
+    </div>
+  </div>
   <div class="conversation" *ngFor="
               let clickedUser of !searchText ? users : filteredConversations
             " (click)="handleConversationClick(clickedUser)">
