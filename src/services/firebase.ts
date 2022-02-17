@@ -21,10 +21,10 @@ export class FirebaseService {
         return this.fireServices.collection('Users').get();
     }
 
-    createMessage(messageData, selectedUser) {
+    createMessage(messageData, selectedUser, currentUserData) {
         const randomMessageId = uuid.v4();
 
-        const currentUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(selectedUser.userId);
+        const currentUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(currentUserData.userId).collection('Conversations').doc(selectedUser.userId);
         const selectedUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(selectedUser.userId).collection('Conversations').doc(this.currentUserData.userId);
 
         let latestMessageData = {
@@ -33,6 +33,7 @@ export class FirebaseService {
         }
 
         selectedUser['latestMessageData'] = latestMessageData;
+        let currentUser = {...currentUserData, latestMessageData : latestMessageData};
 
         currentUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);    
         currentUserFirebaseRef.get().subscribe(res => {
@@ -46,7 +47,7 @@ export class FirebaseService {
 
         selectedUserFirebaseRef.get().subscribe(res => {
             if(!res.data()){
-                selectedUserFirebaseRef.set(selectedUser);
+                selectedUserFirebaseRef.set(currentUser);
             }
             else {
                 selectedUserFirebaseRef.update(latestMessageData);
@@ -56,8 +57,12 @@ export class FirebaseService {
         selectedUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
     }
 
-    getAllConversations() { 
-        return this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').snapshotChanges();
+    getAllConversations(currentUserData) { 
+        return this.fireServices.collection('DirectMessages').doc(currentUserData.userId).collection('Conversations').snapshotChanges();
+    }
+
+    getAllGroups(currentUserData){
+        return this.fireServices.collection('Groups').snapshotChanges();
     }
 
     createGroup(groupData){

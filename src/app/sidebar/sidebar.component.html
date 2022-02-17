@@ -130,7 +130,7 @@
     </div>
     <div class="content">
       <div class="conversationHeader">
-        <div class="name">{{ clickedUser?.userName }}</div>
+        <div class="name">{{ clickedUser?.groupId ? clickedUser?.groupName : clickedUser?.userName }}</div>
         <div class="time" *ngIf="views.recentChatsView">{{ clickedUser?.latestMessageData?.timestamp * 1000 | date:
           'hh:mm' }}</div>
       </div>

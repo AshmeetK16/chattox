@@ -11,10 +11,12 @@ import * as uuid from '../../../node_modules/uuid';
 export class SidebarComponent implements OnInit {
   @Output() conversationClicked: EventEmitter<any> = new EventEmitter();
   @Input() allUsers;
-  @Input() allConversations;
+  @Input() allGroupConversations;
+  @Input() allUserConversations;
+  allConversations : any = [];
   searchText: string;
   groupName: string = "";
-  currentUserData = JSON.parse(localStorage.getItem('user'));
+  currentUserData: any;
   views = {
     recentChatsView: true,
     newChatView: false,
@@ -35,10 +37,18 @@ export class SidebarComponent implements OnInit {
   constructor(private authService : AuthService, private firebaseService: FirebaseService) {}
 
   ngOnInit() {
-    console.log(this.allConversations);
+    this.currentUserData = this.authService.getCurrentUserData();
+  }
+
+  ngOnChanges(){
+    this.allConversations = [...this.allUserConversations, ...this.allGroupConversations];
+    this.allConversations.sort(function(a,b){
+      return b.latestMessageData.timestamp - a.latestMessageData.timestamp
+    });
   }
   
   logOut() {
+    this.allConversations = [];
     return this.authService.logout();
   }
 
@@ -88,7 +98,11 @@ export class SidebarComponent implements OnInit {
       adminId : this.currentUserData.userId,
       groupId : uuid.v4(),
       groupName: this.groupName,
-      users : this.usersPresentInGroup
+      users : this.usersPresentInGroup,
+      latestMessageData : {
+        message : `You created group ${this.groupName}`,
+        timestamp : new Date(new Date().getTime())
+      }
     }
 
     this.firebaseService.createGroup(groupData)

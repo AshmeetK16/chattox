@@ -7,10 +7,8 @@ import { FirebaseService } from './../services/firebase';
   providedIn: 'root'
 })
 export class AuthService {
-
-  user = JSON.parse(localStorage.getItem('user'));
   userStatus = "Hey there! I am using WhatsApp."
-  isLoggedIn = this.user ? true : false;
+  isLoggedIn = JSON.parse(localStorage.getItem('user')) ? true : false;
   
   constructor(public firebaseAuth : AngularFireAuth,
     private router: Router, public firebaseService : FirebaseService) { }
@@ -36,6 +34,10 @@ export class AuthService {
       localStorage.setItem('user',JSON.stringify(userData));
       return this.router.navigate(['/home']);
     })
+  }
+
+  getCurrentUserData() {
+    return JSON.parse(localStorage.getItem('user'));
   }
   
   logout() {

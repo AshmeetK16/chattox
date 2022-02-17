@@ -11,23 +11,33 @@ export class HomeComponent implements OnInit {
   isUSerAuthenticated = this.authService.isLoggedIn;
   selectedUser;
   allUsers: any = [];
-  allConversations: any = [];
+  allUserConversations: any = [];
+  allGroupConversations: any = [];
+  currentUserData: any;
 
   constructor(private authService: AuthService,
     private firebaseService: FirebaseService) { }
 
   ngOnInit() {
+    this.currentUserData = this.authService.getCurrentUserData();
     this.firebaseService.getAllUsers().subscribe((res) => {
       return res.docs.map((userData) => {
-        if (userData.data()['userId'] !== JSON.parse(localStorage.getItem('user')).userId)
+        if (userData.data()['userId'] !== this.currentUserData.userId)
           this.allUsers.push(userData.data());
       })
     });
 
-    this.firebaseService.getAllConversations().subscribe(res => {
-      this.allConversations = [];
+    this.firebaseService.getAllConversations(this.currentUserData).subscribe(res => {
+      this.allUserConversations = [];
       return res.map((userData) => {
-        this.allConversations.push(userData.payload.doc.data());
+        this.allUserConversations.push(userData.payload.doc.data());
+      })
+    })
+
+    this.firebaseService.getAllGroups(this.currentUserData).subscribe(res => {
+      this.allGroupConversations = [];
+      return res.map(groupData => {
+        this.allGroupConversations.push(groupData.payload.doc.data())
       })
     })
   }

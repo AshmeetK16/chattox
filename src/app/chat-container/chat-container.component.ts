@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FirebaseService } from "../../services/firebase";
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AuthService } from '../../services/authService';
 
 @Component({
   selector: 'app-chat-container',
@@ -13,15 +14,21 @@ export class ChatContainerComponent implements OnInit {
   emojiPickerVisible; 
   message = '';
   messages = [];
-  currentUserData = JSON.parse(localStorage.getItem('user'));
+  currentUserData: any;
 
 
-  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore) { }
+  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore, public authService: AuthService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentUserData = this.authService.getCurrentUserData();
 
+    this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedUser.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
+      this.messages = data
+    })
+  }
+  
   ngOnChanges(): void{
-    this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedUser.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
+    this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedUser.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
       this.messages = data
     })
   }
@@ -37,7 +44,7 @@ export class ChatContainerComponent implements OnInit {
       timestamp: new Date(new Date().getTime())
     }
 
-    this.firebaseService.createMessage(messageData, this.selectedUser);
+    this.firebaseService.createMessage(messageData, this.selectedUser, this.currentUserData);
   }
 
   emojiClicked(event) {
