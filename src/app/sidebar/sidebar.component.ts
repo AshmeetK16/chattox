@@ -63,6 +63,7 @@ export class SidebarComponent implements OnInit {
         break;
       }
       case 'newGroup': {
+        this.usersPresentInGroup = [];
         this.views.newGroupView = true;
         break;
       }
@@ -79,12 +80,15 @@ export class SidebarComponent implements OnInit {
   }
 
   newGroupHandling(clickedUser, event) {
-    // this.newGroupData = [];
     if (this.views.newGroupView) {
       if (event.target.checked) {
         this.usersPresentInGroup.push(clickedUser.userId);
       }
+      else {
+        this.usersPresentInGroup = this.usersPresentInGroup.filter(user => user !== clickedUser.userId)
+      }
     }
+    console.log(this.usersPresentInGroup)
   }
 
   emojiClicked(event) {
