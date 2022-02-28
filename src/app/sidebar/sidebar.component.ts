@@ -73,19 +73,19 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  handleConversationClick(clickedUser) {
+  handleConversationClick(clickedConversation) {
     if (!this.views.newGroupView) {
-      this.conversationClicked.emit(clickedUser);
+      this.conversationClicked.emit(clickedConversation);
     }
   }
 
-  newGroupHandling(clickedUser, event) {
+  newGroupHandling(clickedConversation, event) {
     if (this.views.newGroupView) {
       if (event.target.checked) {
-        this.usersPresentInGroup.push(clickedUser.userId);
+        this.usersPresentInGroup.push(clickedConversation.userId);
       }
       else {
-        this.usersPresentInGroup = this.usersPresentInGroup.filter(user => user !== clickedUser.userId)
+        this.usersPresentInGroup = this.usersPresentInGroup.filter(user => user !== clickedConversation.userId)
       }
     }
     console.log(this.usersPresentInGroup)

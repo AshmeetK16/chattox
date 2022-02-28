@@ -9,7 +9,7 @@ import { AuthService } from '../../services/authService';
   styleUrls: ['./chat-container.component.scss']
 })
 export class ChatContainerComponent implements OnInit {
-  @Input() selectedUser;
+  @Input() selectedConversation;
   @Output() onSubmit: EventEmitter<any> = new EventEmitter();
   emojiPickerVisible; 
   message = '';
@@ -21,14 +21,22 @@ export class ChatContainerComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUserData = this.authService.getCurrentUserData();
-
-    this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedUser.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
-      this.messages = data
-    })
+    
+    if(this.selectedConversation.groupId){
+      this.currentUserData && this.fireServices.collection('Groups').doc(this.selectedConversation.groupId).collection('Conversations', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) => {
+        this.messages = data;
+      })
+    }
+    else{
+      this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedConversation.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
+        console.log(data)
+        this.messages = data
+      })
+    }
   }
   
   ngOnChanges(): void{
-    this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedUser.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
+    this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedConversation.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
       this.messages = data
     })
   }
@@ -44,7 +52,11 @@ export class ChatContainerComponent implements OnInit {
       timestamp: new Date(new Date().getTime())
     }
 
-    this.firebaseService.createMessage(messageData, this.selectedUser, this.currentUserData);
+    if(this.selectedConversation.groupId){
+      messageData['username'] = this.currentUserData.userName
+    }
+
+    this.firebaseService.createMessage(messageData, this.selectedConversation, this.currentUserData);
   }
 
   emojiClicked(event) {

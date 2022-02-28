@@ -62,11 +62,16 @@
           border-radius: 5px;
           padding: 10px;
   
+          p{
+            margin: 0;
+            font-weight: 600;
+            color: #585858;
+          }
+
           .time {
             text-align: right;
             color: #959698;
             font-size: 13px;
-            margin-top: 5px;
           }
         }
   

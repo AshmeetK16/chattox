@@ -21,40 +21,58 @@ export class FirebaseService {
         return this.fireServices.collection('Users').get();
     }
 
-    createMessage(messageData, selectedUser, currentUserData) {
+    createMessage(messageData, selectedConversation, currentUserData) {
         const randomMessageId = uuid.v4();
 
-        const currentUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(currentUserData.userId).collection('Conversations').doc(selectedUser.userId);
-        const selectedUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(selectedUser.userId).collection('Conversations').doc(this.currentUserData.userId);
+        if(selectedConversation.groupId){
+            const selectedConversationFirebaseRef = this.fireServices.collection('Groups').doc(selectedConversation.groupId);
+    
+            let latestMessageData = {
+                user : messageData.user,
+                message : messageData.message,
+                timestamp : messageData.timestamp
+            }
 
-        let latestMessageData = {
-            message : messageData.message,
-            timestamp : messageData.timestamp
+            if(selectedConversation.groupId){
+                latestMessageData['username'] = this.currentUserData.userName
+              }
+    
+            selectedConversationFirebaseRef.update({latestMessageData : latestMessageData});   
+            selectedConversationFirebaseRef.collection('Conversations').doc(randomMessageId).set(messageData);   
         }
+        else{
+            const currentUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(currentUserData.userId).collection('Conversations').doc(selectedConversation.userId);
+            const selectedConversationFirebaseRef = this.fireServices.collection('DirectMessages').doc(selectedConversation.userId).collection('Conversations').doc(this.currentUserData.userId);
 
-        selectedUser['latestMessageData'] = latestMessageData;
-        let currentUser = {...currentUserData, latestMessageData : latestMessageData};
+            let latestMessageData = {
+                message : messageData.message,
+                timestamp : messageData.timestamp
+            }
 
-        currentUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);    
-        currentUserFirebaseRef.get().subscribe(res => {
-            if(!res.data()){
-                currentUserFirebaseRef.set(selectedUser);
-            }
-            else {
-                currentUserFirebaseRef.update({latestMessageData : latestMessageData});
-            }
-        })
+            selectedConversation['latestMessageData'] = latestMessageData;
+            let currentUser = {...currentUserData, latestMessageData : latestMessageData};
 
-        selectedUserFirebaseRef.get().subscribe(res => {
-            if(!res.data()){
-                selectedUserFirebaseRef.set(currentUser);
-            }
-            else {
-                selectedUserFirebaseRef.update(latestMessageData);
-            }
-        })   
+            currentUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);    
+            currentUserFirebaseRef.get().subscribe(res => {
+                if(!res.data()){
+                    currentUserFirebaseRef.set(selectedConversation);
+                }
+                else {
+                    currentUserFirebaseRef.update({latestMessageData : latestMessageData});
+                }
+            })
 
-        selectedUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
+            selectedConversationFirebaseRef.get().subscribe(res => {
+                if(!res.data()){
+                    selectedConversationFirebaseRef.set(currentUser);
+                }
+                else {
+                    selectedConversationFirebaseRef.update(latestMessageData);
+                }
+            })   
+
+            selectedConversationFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
+        }
     }
 
     getAllConversations(currentUserData) { 

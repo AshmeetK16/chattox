@@ -5,7 +5,7 @@
           <img src="../../assets/images/noPic.svg" />
         </div>
   
-        <div class="nameSection">{{selectedUser.userName}}</div>
+        <div class="nameSection">{{selectedConversation.username ? selectedConversation.userName : selectedConversation.groupName}}</div>
       </div>
       <div class="actionButtons">
         <img src="../../assets/images/attached.svg" />
@@ -19,6 +19,7 @@
         *ngFor="let message of messages"
       >
         <div class="messageContent">
+          <p *ngIf="message.user !== currentUserData.userId">{{message.username}}</p>
           {{ message.message }}
           <div class="time">{{ message.timestamp * 1000 | date: 'hh:mm' }}</div>
         </div>
