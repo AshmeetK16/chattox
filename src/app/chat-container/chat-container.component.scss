@@ -23,11 +23,16 @@
             max-width: 100%;
           }
         }
-        .nameSection {
+        .groupName {
           flex-grow: 1;
           color: #545454;
           display: flex;
           align-items: center;
+        }
+
+        .group-users{
+          font-size: 12px;
+          color: gray;
         }
       }
   

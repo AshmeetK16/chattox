@@ -4,8 +4,13 @@
         <div class="picture">
           <img src="../../assets/images/noPic.svg" />
         </div>
-  
-        <div class="nameSection">{{selectedConversation.username ? selectedConversation.userName : selectedConversation.groupName}}</div>
+        
+        <div class="group-info">
+        <div class="groupName">{{selectedConversation.userName ? selectedConversation.userName : selectedConversation.groupName}}</div>
+          <div class="group-users" >{{allGroupUsers}}
+          </div>
+        </div>
+
       </div>
       <div class="actionButtons">
         <img src="../../assets/images/attached.svg" />

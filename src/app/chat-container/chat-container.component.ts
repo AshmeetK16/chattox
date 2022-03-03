@@ -10,18 +10,21 @@ import { AuthService } from '../../services/authService';
 })
 export class ChatContainerComponent implements OnInit {
   @Input() selectedConversation;
+  @Input() allUsers;
   @Output() onSubmit: EventEmitter<any> = new EventEmitter();
   emojiPickerVisible; 
   message = '';
   messages = [];
-  currentUserData: any;
+  allGroupUsers : any;
+  currentUserData: any = this.authService.getCurrentUserData();
 
 
   constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore, public authService: AuthService) { }
 
   ngOnInit(): void {
-    this.currentUserData = this.authService.getCurrentUserData();
-    
+  }
+  
+  ngOnChanges(): void{
     if(this.selectedConversation.groupId){
       this.currentUserData && this.fireServices.collection('Groups').doc(this.selectedConversation.groupId).collection('Conversations', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) => {
         this.messages = data;
@@ -33,12 +36,17 @@ export class ChatContainerComponent implements OnInit {
         this.messages = data
       })
     }
-  }
-  
-  ngOnChanges(): void{
-    this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedConversation.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
-      this.messages = data
+
+    const groupUsers = [];
+    this.allUsers.forEach(user => {
+      return this.selectedConversation.users.forEach(userId => {
+        if(user.userId === userId) groupUsers.push(user.userName);
+      })
     })
+
+    groupUsers.push("You");
+    groupUsers.sort()
+    this.allGroupUsers = groupUsers.join(", ")
   }
 
   submitMessage(event) {
