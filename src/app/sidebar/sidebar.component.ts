@@ -13,7 +13,7 @@ export class SidebarComponent implements OnInit {
   @Input() allUsers;
   @Input() allGroupConversations;
   @Input() allUserConversations;
-  allConversations : any = [];
+  allConversations: any = [];
   searchText: string;
   groupName: string = "";
   currentUserData: any;
@@ -34,19 +34,19 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  constructor(private authService : AuthService, private firebaseService: FirebaseService) {}
+  constructor(private authService: AuthService, private firebaseService: FirebaseService) { }
 
   ngOnInit() {
     this.currentUserData = this.authService.getCurrentUserData();
   }
 
-  ngOnChanges(){
+  ngOnChanges() {
     this.allConversations = [...this.allUserConversations, ...this.allGroupConversations];
-    this.allConversations.sort(function(a,b){
+    this.allConversations.sort(function (a, b) {
       return b.latestMessageData.timestamp - a.latestMessageData.timestamp
     });
   }
-  
+
   logOut() {
     this.allConversations = [];
     return this.authService.logout();
@@ -57,7 +57,7 @@ export class SidebarComponent implements OnInit {
     this.views.recentChatsView = false;
     this.views.newGroupView = false;
 
-    switch(clickedView) {
+    switch (clickedView) {
       case 'newChat': {
         this.views.newChatView = true;
         break;
@@ -67,7 +67,7 @@ export class SidebarComponent implements OnInit {
         this.views.newGroupView = true;
         break;
       }
-      default : {
+      default: {
         this.views.recentChatsView = true;
       }
     }
@@ -97,15 +97,15 @@ export class SidebarComponent implements OnInit {
 
   createGroup() {
     this.usersPresentInGroup.push(this.currentUserData.userId);
-    
+
     const groupData = {
-      adminId : this.currentUserData.userId,
-      groupId : uuid.v4(),
+      adminId: this.currentUserData.userId,
+      groupId: uuid.v4(),
       groupName: this.groupName,
-      users : this.usersPresentInGroup,
-      latestMessageData : {
-        message : `You created group ${this.groupName}`,
-        timestamp : new Date(new Date().getTime())
+      users: this.usersPresentInGroup,
+      latestMessageData: {
+        message: `You created group ${this.groupName}`,
+        timestamp: new Date(new Date().getTime())
       }
     }
 

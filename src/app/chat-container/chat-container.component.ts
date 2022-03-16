@@ -12,10 +12,10 @@ export class ChatContainerComponent implements OnInit {
   @Input() selectedConversation;
   @Input() allUsers;
   @Output() onSubmit: EventEmitter<any> = new EventEmitter();
-  emojiPickerVisible; 
+  emojiPickerVisible;
   message = '';
   messages = [];
-  allGroupUsers : any;
+  allGroupUsers: any;
   currentUserData: any = this.authService.getCurrentUserData();
 
 
@@ -23,15 +23,15 @@ export class ChatContainerComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  
-  ngOnChanges(): void{
-    if(this.selectedConversation.groupId){
+
+  ngOnChanges(): void {
+    if (this.selectedConversation.groupId) {
       this.currentUserData && this.fireServices.collection('Groups').doc(this.selectedConversation.groupId).collection('Conversations', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) => {
         this.messages = data;
       })
     }
-    else{
-      this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedConversation.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) =>{
+    else {
+      this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedConversation.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) => {
         console.log(data)
         this.messages = data
       })
@@ -40,7 +40,7 @@ export class ChatContainerComponent implements OnInit {
     const groupUsers = [];
     this.allUsers.forEach(user => {
       return this.selectedConversation.users.forEach(userId => {
-        if(user.userId === userId) groupUsers.push(user.userName);
+        if (user.userId === userId) groupUsers.push(user.userName);
       })
     })
 
@@ -60,7 +60,7 @@ export class ChatContainerComponent implements OnInit {
       timestamp: new Date(new Date().getTime())
     }
 
-    if(this.selectedConversation.groupId){
+    if (this.selectedConversation.groupId) {
       messageData['username'] = this.currentUserData.userName
     }
 
