@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import * as uuid from '../../node_modules/uuid';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { finalize } from 'rxjs/operators';
+
 @Injectable({
     providedIn: 'root'
 })
 export class FirebaseService {
     currentUserData = JSON.parse(localStorage.getItem('user'));
+    downloadURL;
 
-    constructor(public fireServices: AngularFirestore) { }
+    constructor(public fireServices: AngularFirestore, public storage: AngularFireStorage,) { }
 
     createUser(userData) {
         return this.fireServices.collection('Users').doc(userData.userId).set(userData);
@@ -96,5 +100,21 @@ export class FirebaseService {
         });
 
         this.fireServices.collection('Groups').doc(groupData.groupId).set(groupData);
+    }
+
+    uploadMediaInStorage(fileToUpload) {
+        let ruid = uuid.v4();
+        const filePath = `messages/${ruid}`;
+
+        const storageRef = this.storage.ref(filePath);
+        const uploadTask = this.storage.upload(filePath, fileToUpload);
+        uploadTask.snapshotChanges().pipe(
+            finalize(() => {
+                storageRef.getDownloadURL().subscribe(downloadURL => {
+                    this.downloadURL = downloadURL;
+                });
+            })
+        ).subscribe();
+        return uploadTask.percentageChanges();
     }
 }

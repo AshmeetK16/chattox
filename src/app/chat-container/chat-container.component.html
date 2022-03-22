@@ -5,15 +5,14 @@
           <img src="../../assets/images/noPic.svg" />
         </div>
         
-        <div class="group-info">
-        <div class="groupName">{{selectedConversation.userName ? selectedConversation.userName : selectedConversation.groupName}}</div>
-          <div class="group-users" >{{allGroupUsers}}
+        <div class="group-info d-flex flex-column justify-content-center">
+          <div class="groupName">{{selectedConversation.userName ? selectedConversation.userName : selectedConversation.groupName}}</div>
+          <div class="group-users" *ngIf="selectedConversation.groupId">{{allGroupUsers}}
           </div>
         </div>
 
       </div>
       <div class="actionButtons">
-        <img src="../../assets/images/attached.svg" />
         <img src="../../assets/images/moreVertIcon.svg" />
       </div>
     </div>
@@ -30,8 +29,21 @@
         </div>
       </div>
     </div>
+    <!-- <p class= "file-uploaded" *ngIf="downloadURL" >File uploaded</p> -->
+  <div *ngIf="percentage < 100" class="progress mt-2">
+    <div
+      class="progress-bar progress-bar-info"
+      role="progressbar"
+      attr.aria-valuenow="{{ percentage }}"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [ngStyle]="{ width: percentage + '%' }"
+    >
+      {{ percentage }}%
+    </div>
+  </div>
     <div id="footer">
-      <div id="smileyIcon">
+      <div id="smiley-icon">
         <img
           (click)="emojiPickerVisible = !emojiPickerVisible"
           src="../../assets/images/smileIcon.svg"
@@ -44,6 +56,13 @@
           [darkMode]="false"
         ></emoji-mart>
       </div>
+      <div id="attachment-icon">
+        <label for="file-input">
+          <img src="../../assets/images/attached.svg" alt=""/>
+        </label>
+
+        <input type="file" id="file-input" (change)="handleFileUpload($event)">
+      </div>
       <div id="textarea">
         <textarea
           [(ngModel)]="message"
@@ -51,8 +70,9 @@
           placeholder="Type a message"
         ></textarea>
       </div>
-      <div id="micIcon">
+      <div id="mic-icon">
         <img src="../../assets/images/voiceIcon.svg" />
       </div>
     </div>
   </div>
+  

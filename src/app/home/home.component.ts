@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       })
     })
 
-    this.firebaseService.getAllGroups(this.currentUserData).subscribe(res => {
+    this.firebaseService.getAllGroups().subscribe(res => {
       this.allGroupConversations = [];
       return res.map(groupData => {
         this.allGroupConversations.push(groupData.payload.doc.data())

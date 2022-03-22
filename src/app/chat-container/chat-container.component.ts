@@ -17,9 +17,13 @@ export class ChatContainerComponent implements OnInit {
   messages = [];
   allGroupUsers: any;
   currentUserData: any = this.authService.getCurrentUserData();
+  // downloadURL;
+  percentage;
 
 
-  constructor(private firebaseService: FirebaseService, public fireServices: AngularFirestore, public authService: AuthService) { }
+  constructor(private firebaseService: FirebaseService,
+    public fireServices: AngularFirestore,
+    public authService: AuthService,) { }
 
   ngOnInit(): void {
   }
@@ -50,7 +54,8 @@ export class ChatContainerComponent implements OnInit {
   }
 
   submitMessage(event) {
-    let value = event.target.value.trim();
+    let value = this.firebaseService.downloadURL ? this.firebaseService.downloadURL : event.target.value.trim();
+    // this.downloadURL = this.firebaseService.downloadURL;
     this.message = '';
     if (value.length < 1) return false;
 
@@ -65,9 +70,22 @@ export class ChatContainerComponent implements OnInit {
     }
 
     this.firebaseService.createMessage(messageData, this.selectedConversation, this.currentUserData);
+    // this.downloadURL = undefined;
+    this.firebaseService.downloadURL = undefined;
   }
 
   emojiClicked(event) {
     this.message += event.emoji.native;
+  }
+
+  handleFileUpload(event) {
+    let file = event.target.files[0];
+    this.firebaseService.uploadMediaInStorage(file).subscribe(
+      percentage => {
+        this.percentage = Math.round(percentage);
+      },
+      error => {
+        console.log(error);
+      });
   }
 }

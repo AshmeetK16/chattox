@@ -19,7 +19,8 @@ import { FirebaseService } from "./../services/firebase";
 
 import { AngularFireModule } from "@angular/fire";
 import { AngularFirestoreModule } from "@angular/fire/firestore";
-import { AngularFireDatabaseModule } from "@angular/fire/database";
+// import { AngularFireDatabaseModule } from "@angular/fire/database";
+import {AngularFireStorageModule} from  '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { AngularFireDatabaseModule } from "@angular/fire/database";
     FormsModule,
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
-    AngularFireDatabaseModule,
+    // AngularFireDatabaseModule,
+    AngularFireStorageModule,
     NgbModule,
     PickerModule
   ],
