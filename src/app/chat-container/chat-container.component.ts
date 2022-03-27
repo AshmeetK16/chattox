@@ -72,7 +72,7 @@ export class ChatContainerComponent implements OnInit {
 
     this.firebaseService.createMessage(messageData, this.selectedConversation, this.currentUserData);
     this.fileDetails = undefined;
-    this.firebaseService.fileDetails = undefined;
+    this.firebaseService.fileDetails = undefined;  
   }
 
   emojiClicked(event) {
