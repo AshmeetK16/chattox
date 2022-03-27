@@ -2,7 +2,7 @@
     <div id="header">
       <div class="avatarSection">
         <div class="picture">
-          <img src="../../assets/images/noPic.svg" />
+          <img src="../../assets/images/noPic.svg"/>
         </div>
         
         <div class="group-info d-flex flex-column justify-content-center">
@@ -30,18 +30,6 @@
       </div>
     </div>
     <!-- <p class= "file-uploaded" *ngIf="downloadURL" >File uploaded</p> -->
-  <div *ngIf="percentage < 100" class="progress mt-2">
-    <div
-      class="progress-bar progress-bar-info"
-      role="progressbar"
-      attr.aria-valuenow="{{ percentage }}"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      [ngStyle]="{ width: percentage + '%' }"
-    >
-      {{ percentage }}%
-    </div>
-  </div>
     <div id="footer">
       <div id="smiley-icon">
         <img
@@ -74,5 +62,53 @@
         <img src="../../assets/images/voiceIcon.svg" />
       </div>
     </div>
+</div>
+
+<button hidden="true" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mediaModal" id="mediaModalBtn">
+  Launch demo modal
+</button>
+<!-- Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1"  data-backdrop="false" aria-labelledby="mediaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" *ngIf="percentage > 0">
+        <span [ngSwitch]="firebaseService?.fileDetails?.fileType">
+          <ng-template [ngSwitchCase]="'image/png'">
+            <img class="preview-image" [src]='firebaseService?.fileDetails?.downloadURL' alt="" />
+          </ng-template>
+          <ng-template [ngSwitchCase]="'video/mp4'">
+            <video width="320" height="240" controls>
+              <source [src]='firebaseService?.fileDetails?.downloadURL' type="video/mp4">
+            Your browser does not support the video tag.
+            </video>
+          </ng-template>
+          <ng-template [ngSwitchCase]="'audio/ogg'">
+            <audio controls>
+              <source [src]='firebaseService?.fileDetails?.downloadURL' type="audio/ogg">
+              Your browser does not support the audio tag.
+            </audio>
+          </ng-template>
+        </span>
+        <div *ngIf="percentage < 100" class="progress mt-2">
+          <div
+            class="progress-bar progress-bar-info"
+            role="progressbar"
+            attr.aria-valuenow="{{ percentage }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [ngStyle]="{ width: percentage + '%' }"
+          >
+            {{ percentage }}%
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="submitMessage()" data-bs-dismiss="modal">Send</button>
+      </div>
+    </div>
   </div>
-  
+</div>

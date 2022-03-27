@@ -9,7 +9,7 @@ import { finalize } from 'rxjs/operators';
 })
 export class FirebaseService {
     currentUserData = JSON.parse(localStorage.getItem('user'));
-    downloadURL;
+    public fileDetails;
 
     constructor(public fireServices: AngularFirestore, public storage: AngularFireStorage,) { }
 
@@ -111,7 +111,12 @@ export class FirebaseService {
         uploadTask.snapshotChanges().pipe(
             finalize(() => {
                 storageRef.getDownloadURL().subscribe(downloadURL => {
-                    this.downloadURL = downloadURL;
+                    const fileMetadata = {
+                        downloadURL: downloadURL,
+                        fileType: fileToUpload.type
+                    }
+                    console.log(fileMetadata);
+                    this.fileDetails = fileMetadata;
                 });
             })
         ).subscribe();

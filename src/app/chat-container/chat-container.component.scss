@@ -68,6 +68,7 @@
           background-color: #fff;
           border-radius: 5px;
           padding: 10px;
+          // max-width: 60%;
   
           p{
             margin: 0;
@@ -149,17 +150,12 @@
       #micIcon {
         flex-basis: 50px;
       }
-  
-      // #micIcon,
-      // #smiley-icon,
-      // #attachment-icon {
-      //   display: flex;
-      //   align-items: center;
-      //   justify-content: center;
-      //   img {
-      //     max-width: 40%;
-      //     cursor: pointer;
-      //   }
-      // }
     }
   }
+
+.modal {
+  img {
+    height: 150px;
+    width: 150px;
+  }
+}

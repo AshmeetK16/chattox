@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FirebaseService } from "../../services/firebase";
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthService } from '../../services/authService';
@@ -12,18 +12,19 @@ export class ChatContainerComponent implements OnInit {
   @Input() selectedConversation;
   @Input() allUsers;
   @Output() onSubmit: EventEmitter<any> = new EventEmitter();
+  @ViewChild('mediaModalBtn') mediaModalBtn: ElementRef;
   emojiPickerVisible;
   message = '';
   messages = [];
   allGroupUsers: any;
   currentUserData: any = this.authService.getCurrentUserData();
-  // downloadURL;
+  fileDetails;
   percentage;
 
 
   constructor(private firebaseService: FirebaseService,
     public fireServices: AngularFirestore,
-    public authService: AuthService,) { }
+    public authService: AuthService) { }
 
   ngOnInit(): void {
   }
@@ -43,7 +44,7 @@ export class ChatContainerComponent implements OnInit {
 
     const groupUsers = [];
     this.allUsers.forEach(user => {
-      return this.selectedConversation.users.forEach(userId => {
+      return this.selectedConversation.users && this.selectedConversation.users.forEach(userId => {
         if (user.userId === userId) groupUsers.push(user.userName);
       })
     })
@@ -53,9 +54,9 @@ export class ChatContainerComponent implements OnInit {
     this.allGroupUsers = groupUsers.join(", ")
   }
 
-  submitMessage(event) {
-    let value = this.firebaseService.downloadURL ? this.firebaseService.downloadURL : event.target.value.trim();
-    // this.downloadURL = this.firebaseService.downloadURL;
+  submitMessage(event?) {
+    const value = this.firebaseService.fileDetails && this.firebaseService.fileDetails.downloadURL ? this.firebaseService.fileDetails.downloadURL : event.target.value.trim();
+    this.fileDetails = this.firebaseService.fileDetails;
     this.message = '';
     if (value.length < 1) return false;
 
@@ -70,8 +71,8 @@ export class ChatContainerComponent implements OnInit {
     }
 
     this.firebaseService.createMessage(messageData, this.selectedConversation, this.currentUserData);
-    // this.downloadURL = undefined;
-    this.firebaseService.downloadURL = undefined;
+    this.fileDetails = undefined;
+    this.firebaseService.fileDetails = undefined;
   }
 
   emojiClicked(event) {
@@ -79,13 +80,16 @@ export class ChatContainerComponent implements OnInit {
   }
 
   handleFileUpload(event) {
-    let file = event.target.files[0];
-    this.firebaseService.uploadMediaInStorage(file).subscribe(
-      percentage => {
-        this.percentage = Math.round(percentage);
-      },
-      error => {
-        console.log(error);
-      });
+    if (event.target.files && event.target.files.length > 0) {
+      let file = event.target.files[0];
+      document.getElementById('mediaModalBtn').click();
+      this.firebaseService.uploadMediaInStorage(file).subscribe(
+        percentage => {
+          this.percentage = Math.round(percentage);
+        },
+        error => {
+          console.log(error);
+        });
+    }
   }
 }

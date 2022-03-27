@@ -6,3 +6,9 @@ $base-font-size: 14px;
 $sub-text-font-size: 12px;
 $base-text-color: black;
 $sub-text-color: grey;
+
+body {
+    .modal-backdrop {
+        z-index: -1;
+    }
+}
