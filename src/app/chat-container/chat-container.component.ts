@@ -63,7 +63,12 @@ export class ChatContainerComponent implements OnInit {
     let messageData = {
       message: value,
       user: this.currentUserData.userId,
-      timestamp: new Date(new Date().getTime())
+      timestamp: new Date(new Date().getTime()),
+    }
+
+    if(this.firebaseService.fileDetails){
+      console.log(messageData);
+      messageData['fileType'] = this.firebaseService.fileDetails.fileType;
     }
 
     if (this.selectedConversation.groupId) {

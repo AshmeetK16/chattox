@@ -22,11 +22,35 @@
         [ngClass]="{ 'me' : message.user === currentUserData.userId}"
         *ngFor="let message of messages"
       >
-        <div class="messageContent">
-          <p *ngIf="message.user !== currentUserData.userId">{{message.username}}</p>
-          {{ message.message }}
-          <div class="time">{{ message.timestamp * 1000 | date: 'hh:mm' }}</div>
-        </div>
+        <ng-container *ngIf="!message.fileType">
+          <div class="messageContent">
+            <p *ngIf="message.user !== currentUserData.userId">{{message.username}}</p>
+            {{ message.message }}
+            <div class="time">{{ message.timestamp * 1000 | date: 'hh:mm' }}</div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="message.fileType">
+          <div class="messageContent">
+            <div [ngSwitch]="message.fileType">
+              <ng-template [ngSwitchCase]="'image/png'">
+                <img class="preview-image" [src]='message.message' alt="" />
+              </ng-template>
+              <ng-template [ngSwitchCase]="'video/mp4'">
+                <video width="320" height="240" controls>
+                  <source [src]='message.message' type="video/mp4">
+                Your browser does not support the video tag.
+                </video>
+              </ng-template>
+              <ng-template [ngSwitchCase]="'audio/ogg'">
+                <audio controls>
+                  <source [src]='message.message' type="audio/ogg">
+                  Your browser does not support the audio tag.
+                </audio>
+              </ng-template>
+              <div class="time">{{ message.timestamp * 1000 | date: 'hh:mm' }}</div>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
     <!-- <p class= "file-uploaded" *ngIf="downloadURL" >File uploaded</p> -->

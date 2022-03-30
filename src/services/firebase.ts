@@ -25,7 +25,7 @@ export class FirebaseService {
         return this.fireServices.collection('Users').get();
     }
 
-    createMessage(messageData, selectedConversation, currentUserData) {
+    createMessage(messageData, selectedConversation, currentUserData) {debugger;
         const randomMessageId = uuid.v4();
 
         if (selectedConversation.groupId) {
@@ -35,10 +35,6 @@ export class FirebaseService {
                 user: messageData.user,
                 message: messageData.message,
                 timestamp: messageData.timestamp
-            }
-
-            if (selectedConversation.groupId) {
-                latestMessageData['username'] = this.currentUserData.userName
             }
 
             selectedConversationFirebaseRef.update({ latestMessageData: latestMessageData });
@@ -52,6 +48,22 @@ export class FirebaseService {
                 message: messageData.message,
                 timestamp: messageData.timestamp
             }
+            if (messageData.fileType === 'image/png') {
+                latestMessageData.message = 'Image';
+            }
+
+            if (messageData.fileType === 'video/mp4') {
+                latestMessageData.message = 'Video';
+            }
+
+            if (messageData.fileType === 'audio/ogg') {
+                latestMessageData.message = 'Audio';
+            }
+
+            if (selectedConversation.groupId) {
+                latestMessageData['username'] = this.currentUserData.userName
+            }
+            console.log(latestMessageData);
 
             selectedConversation['latestMessageData'] = latestMessageData;
             let currentUser = { ...currentUserData, latestMessageData: latestMessageData };
