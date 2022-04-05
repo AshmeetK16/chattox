@@ -20,7 +20,8 @@ export class ChatContainerComponent implements OnInit {
   currentUserData: any = this.authService.getCurrentUserData();
   fileDetails;
   percentage;
-
+  isFileUploaded: boolean = false;
+  showChatLoader: boolean = false;
 
   constructor(private firebaseService: FirebaseService,
     public fireServices: AngularFirestore,
@@ -30,14 +31,16 @@ export class ChatContainerComponent implements OnInit {
   }
 
   ngOnChanges(): void {
+    this.showChatLoader = true;
     if (this.selectedConversation.groupId) {
       this.currentUserData && this.fireServices.collection('Groups').doc(this.selectedConversation.groupId).collection('Conversations', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) => {
+        this.showChatLoader = false;
         this.messages = data;
       })
     }
     else {
       this.currentUserData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(this.selectedConversation.userId).collection('Messages', ref => ref.orderBy('timestamp', 'desc')).valueChanges().subscribe((data) => {
-        console.log(data)
+        this.showChatLoader = false;
         this.messages = data
       })
     }
@@ -85,12 +88,17 @@ export class ChatContainerComponent implements OnInit {
   }
 
   handleFileUpload(event) {
+    this.isFileUploaded = false;
     if (event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
       document.getElementById('mediaModalBtn').click();
       this.firebaseService.uploadMediaInStorage(file).subscribe(
         percentage => {
           this.percentage = Math.round(percentage);
+          if (this.percentage === 100) {
+            this.isFileUploaded = true;
+            this.firebaseService.showPreviewLoader = true;
+          }
         },
         error => {
           console.log(error);

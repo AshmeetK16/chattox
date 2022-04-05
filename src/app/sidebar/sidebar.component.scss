@@ -141,6 +141,10 @@
       flex-direction: column;
       position: relative;
 
+      .conversations-loader {
+        height: 100%;
+      }
+
       .group-input{
         display: flex;
         padding: 12px 12px 12px 25px;

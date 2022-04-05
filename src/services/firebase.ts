@@ -10,6 +10,7 @@ import { finalize } from 'rxjs/operators';
 export class FirebaseService {
     currentUserData = JSON.parse(localStorage.getItem('user'));
     public fileDetails;
+    public showPreviewLoader;
 
     constructor(public fireServices: AngularFirestore, public storage: AngularFireStorage,) { }
 
@@ -25,7 +26,7 @@ export class FirebaseService {
         return this.fireServices.collection('Users').get();
     }
 
-    createMessage(messageData, selectedConversation, currentUserData) {debugger;
+    createMessage(messageData, selectedConversation, currentUserData) {
         const randomMessageId = uuid.v4();
 
         if (selectedConversation.groupId) {
@@ -129,6 +130,7 @@ export class FirebaseService {
                     }
                     console.log(fileMetadata);
                     this.fileDetails = fileMetadata;
+                    this.showPreviewLoader = false;
                 });
             })
         ).subscribe();

@@ -13,6 +13,7 @@ export class SidebarComponent implements OnInit {
   @Input() allUsers;
   @Input() allGroupConversations;
   @Input() allUserConversations;
+  @Input() showConversationsLoader;
   allConversations: any = [];
   searchText: string;
   groupName: string = "";

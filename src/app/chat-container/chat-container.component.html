@@ -17,7 +17,11 @@
       </div>
     </div>
     <div id="body">
-      <div
+      <ng-container *ngIf="showChatLoader">
+        <div class="d-flex justify-content-center align-items-center chat-loader"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i></div>
+      </ng-container>
+      <ng-container *ngIf="!showChatLoader">
+        <div
         class="message"
         [ngClass]="{ 'me' : message.user === currentUserData.userId}"
         *ngFor="let message of messages"
@@ -52,6 +56,7 @@
           </div>
         </ng-container>
       </div>
+      </ng-container>
     </div>
     <!-- <p class= "file-uploaded" *ngIf="downloadURL" >File uploaded</p> -->
     <div id="footer">
@@ -99,7 +104,7 @@
         <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body" *ngIf="percentage > 0">
+      <div class="modal-body">
         <span [ngSwitch]="firebaseService?.fileDetails?.fileType">
           <ng-template [ngSwitchCase]="'image/png'">
             <img class="preview-image" [src]='firebaseService?.fileDetails?.downloadURL' alt="" />
@@ -117,7 +122,7 @@
             </audio>
           </ng-template>
         </span>
-        <div *ngIf="percentage < 100" class="progress mt-2">
+        <div *ngIf="percentage >=0 && percentage <100" class="progress mt-2">
           <div
             class="progress-bar progress-bar-info"
             role="progressbar"
@@ -129,6 +134,7 @@
             {{ percentage }}%
           </div>
         </div>
+        <span *ngIf="firebaseService.showPreviewLoader"><i class="fa fa-spinner fa-spin d-flex justify-content-center" aria-hidden="true"></i></span>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="submitMessage()" data-bs-dismiss="modal">Send</button>

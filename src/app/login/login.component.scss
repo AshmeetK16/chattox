@@ -49,6 +49,12 @@
             .register {
                 text-decoration: none;
             }
+
+            .invalid-cred {
+                color: red;
+                text-align: center;
+                margin-top: 12px;
+            }
         }
     }
 }

@@ -58,6 +58,10 @@
       // overflow: scroll;
       height: calc(100% - (67px + 65px));
       overflow: auto;
+      .chat-loader {
+        font-size: 48px;
+        height: 100%;
+      }
       .message {
         margin-top: 10px;
         display: flex;
