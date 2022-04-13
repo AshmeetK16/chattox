@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import * as uuid from 'node_modules/uuid';
 import { FirebaseService } from "../../services/firebase";
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AuthService } from '../../services/authService';
@@ -22,6 +23,7 @@ export class ChatContainerComponent implements OnInit {
   percentage;
   isFileUploaded: boolean = false;
   showChatLoader: boolean = false;
+  scheduledTimeRadio: any;
 
   constructor(private firebaseService: FirebaseService,
     public fireServices: AngularFirestore,
@@ -67,6 +69,7 @@ export class ChatContainerComponent implements OnInit {
       message: value,
       user: this.currentUserData.userId,
       timestamp: new Date(new Date().getTime()),
+      isScheduledMsg: false
     }
 
     if(this.firebaseService.fileDetails){
@@ -104,5 +107,39 @@ export class ChatContainerComponent implements OnInit {
           console.log(error);
         });
     }
+  }
+
+  handleScheduledMessage(event?) {
+    this.fileDetails = this.firebaseService.fileDetails;
+    if (this.message === '') return;
+
+    let messageData = {
+      message: this.message,
+      user: this.currentUserData.userId,
+      timestamp: new Date(new Date().getTime()),
+      isScheduledMsg: true
+    }
+
+    if (this.firebaseService.fileDetails) {
+      console.log(messageData);
+      messageData['fileType'] = this.firebaseService.fileDetails.fileType;
+    }
+
+    if (this.selectedConversation.groupId) {
+      messageData['username'] = this.currentUserData.userName
+    }
+
+    // Create message will be called after settimeout of defined timinig
+    const randomMessageId = uuid.v4();
+    let latestMessageData = this.firebaseService.createLatestMessageData(messageData, this.selectedConversation);
+    this.firebaseService.updateCurrentUserFirebaseRef(this.selectedConversation, messageData, latestMessageData, randomMessageId);
+    this.scheduledTimeRadio = parseInt(this.scheduledTimeRadio);
+    const effectiveScheduledTime = this.scheduledTimeRadio*60000;
+    setTimeout(() => {
+      messageData.isScheduledMsg = false;
+      this.firebaseService.updateSelectedUserFirebaseRef(this.selectedConversation, this.currentUserData, this.message, latestMessageData, randomMessageId);
+    },effectiveScheduledTime);
+    this.fileDetails = undefined;
+    this.firebaseService.fileDetails = undefined;
   }
 }

@@ -109,12 +109,15 @@
   
       #smiley-icon,
       #attachment-icon,
-      #mic-icon {
+      #scheduled-msg-icon {
         margin: 0 10px;
 
         img{
           width: 25px;
-
+        }
+        i {
+          font-size: 20px;
+          color: grey;
         }
       }
       #attachment-icon {
@@ -162,9 +165,15 @@
     }
   }
 
-.modal {
+#mediaModal {
   img {
     height: 150px;
     width: 150px;
+  }
+}
+
+#scheduledTimeModal {
+  .modal-dialog {
+    max-width: 300px;
   }
 }
