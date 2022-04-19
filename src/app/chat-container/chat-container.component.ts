@@ -13,6 +13,7 @@ export class ChatContainerComponent implements OnInit {
   @Input() selectedConversation;
   @Input() allUsers;
   @Output() onSubmit: EventEmitter<any> = new EventEmitter();
+  @Output() disappearChatToggle: EventEmitter<any> = new EventEmitter();
   @ViewChild('mediaModalBtn') mediaModalBtn: ElementRef;
   emojiPickerVisible;
   message = '';
@@ -141,5 +142,9 @@ export class ChatContainerComponent implements OnInit {
     },effectiveScheduledTime);
     this.fileDetails = undefined;
     this.firebaseService.fileDetails = undefined;
+  }
+
+  handleDisappearingChatToggle(event) {
+    this.disappearChatToggle.emit(event.currentTarget.checked);
   }
 }

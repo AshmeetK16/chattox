@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   allGroupConversations: any = [];
   currentUserData: any;
   showConversationsLoader: boolean = false;
+  disappearChatToggleForSelectedUser: boolean = false;
 
   constructor(private authService: AuthService,
     private firebaseService: FirebaseService) { }
@@ -47,7 +48,16 @@ export class HomeComponent implements OnInit {
     })
   }
 
+  updateDisappearChatToggle(disappearToggleValue) {
+    this.disappearChatToggleForSelectedUser = disappearToggleValue;
+  }
+
   onConversationSelected(selectedConversation) {
-    this.selectedConversation = selectedConversation;
+    this.firebaseService.updateActiveUserData(false);
+    if (this.disappearChatToggleForSelectedUser) {
+      this.firebaseService.deleteActiveUserChat();
+    }
+    this.selectedConversation = selectedConversation;    
+    this.firebaseService.updateActiveUserData(true);
   }
 }

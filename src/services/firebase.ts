@@ -71,10 +71,12 @@ export class FirebaseService {
             console.log(latestMessageData);
 
             selectedConversation['latestMessageData'] = latestMessageData;
-            let currentUser = { ...currentUserData, latestMessageData: latestMessageData };
+            selectedConversation['activeUser'] = true;
+            selectedConversation['disappearChat'] = false;
+            let currentUser = { ...currentUserData, latestMessageData: latestMessageData, activeUser: true, disappearChat: false };
 
-            this.updateSelectedUserFirebaseRef(selectedConversation, currentUser, messageData, latestMessageData, randomMessageId);
-            this.updateCurrentUserFirebaseRef(selectedConversation, messageData, latestMessageData, randomMessageId);
+            this.updateSelectedUserFirebaseRef(true, selectedConversation.userId, currentUser, messageData, randomMessageId);
+            this.updateCurrentUserFirebaseRef(true, selectedConversation, messageData, randomMessageId);
         }
     }
 
@@ -123,30 +125,70 @@ export class FirebaseService {
         return uploadTask.percentageChanges();
     }
 
-    updateSelectedUserFirebaseRef(selectedConversation, currentUser, messageData, latestMessageData, randomMessageId) {
-        const selectedConversationFirebaseRef = this.fireServices.collection('DirectMessages').doc(selectedConversation.userId).collection('Conversations').doc(this.currentUserData.userId);
+    updateSelectedUserFirebaseRef(activeUserState?, selectedConversationUserId?, currentUser?, messageData?, randomMessageId?) {
+        const selectedConversationFirebaseRef = selectedConversationUserId && this.fireServices.collection('DirectMessages').doc(selectedConversationUserId).collection('Conversations').doc(this.currentUserData.userId);
 
-        selectedConversationFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
-        selectedConversationFirebaseRef.get().subscribe(res => {
-            if (!res.data()) {
-                selectedConversationFirebaseRef.set(currentUser);
-            }
-            else {
-                selectedConversationFirebaseRef.update({ latestMessageData: latestMessageData });
-            }
-        })
+        if (currentUser && currentUser.latestMessageData) {
+            selectedConversationFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
+            selectedConversationFirebaseRef.get().subscribe(res => {
+                if (!res.data()) {
+                    selectedConversationFirebaseRef.set(currentUser);
+                }
+                else {
+                    selectedConversationFirebaseRef.update({ latestMessageData: currentUser.latestMessageData });
+                }
+            })
+        }
+        else if (activeUserState && selectedConversationUserId) {
+            selectedConversationFirebaseRef.update({ activeUser: activeUserState });
+        }
+        else {
+            selectedConversationFirebaseRef && selectedConversationFirebaseRef.collection('Messages').get()
+                .subscribe((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        console.log(doc.ref);
+                        doc.ref.delete();
+                    });
+                })
+        }
     }
 
-    updateCurrentUserFirebaseRef(selectedConversation, messageData, latestMessageData, randomMessageId) {
-        const currentUserFirebaseRef = this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(selectedConversation.userId);
-        currentUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
-        currentUserFirebaseRef.get().subscribe(res => {
-            if (!res.data()) {
-                currentUserFirebaseRef.set(selectedConversation);
-            }
-            else {
-                currentUserFirebaseRef.update({ latestMessageData: latestMessageData });
-            }
-        })
+    updateCurrentUserFirebaseRef(activeUserState?, selectedConversationData?, messageData?, randomMessageId?) {
+        const currentUserFirebaseRef = selectedConversationData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(selectedConversationData.userId);
+        
+        if ( selectedConversationData && selectedConversationData.latestMessageData) {
+            currentUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
+            currentUserFirebaseRef.get().subscribe(res => {
+                if (!res.data()) {
+                    console.log(selectedConversationData);
+                    currentUserFirebaseRef.set(selectedConversationData);
+                }
+                else {
+                    currentUserFirebaseRef.update({ latestMessageData: selectedConversationData.latestMessageData    });
+                }
+            })
+        }
+        else if(activeUserState && selectedConversationData) {
+            currentUserFirebaseRef.update({activeUser : activeUserState});
+        }
+        else {
+            currentUserFirebaseRef && currentUserFirebaseRef.collection('Messages').get()
+                .subscribe((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        console.log(doc.ref);
+                        doc.ref.delete();
+                    });
+                })
+        }
+    }
+
+    updateActiveUserData(activeUserState) {
+        this.updateSelectedUserFirebaseRef(activeUserState);
+        this.updateCurrentUserFirebaseRef(activeUserState);
+    }
+
+    deleteActiveUserChat() {
+        this.updateSelectedUserFirebaseRef();
+        this.updateCurrentUserFirebaseRef();
     }
 }
