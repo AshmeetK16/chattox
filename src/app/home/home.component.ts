@@ -53,11 +53,13 @@ export class HomeComponent implements OnInit {
   }
 
   onConversationSelected(selectedConversation) {
-    this.firebaseService.updateActiveUserData(false);
+    if (this.selectedConversation) 
+      this.firebaseService.updateActiveUserData({state: false, disappearingChatState: this.disappearChatToggleForSelectedUser}, this.selectedConversation);
+    
     if (this.disappearChatToggleForSelectedUser) {
-      this.firebaseService.deleteActiveUserChat();
+      this.firebaseService.deleteActiveUserChat(this.selectedConversation);
     }
     this.selectedConversation = selectedConversation;    
-    this.firebaseService.updateActiveUserData(true);
+    this.firebaseService.updateActiveUserData({state: true, disappearingChatState: this.disappearChatToggleForSelectedUser}, this.selectedConversation);
   }
 }
