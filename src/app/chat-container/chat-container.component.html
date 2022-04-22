@@ -16,7 +16,7 @@
       <div ngbDropdown class="d-flex chat-controls ms-3">
         Disappear chat
         <div class="form-check form-switch ms-3">
-          <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" (click)="handleDisappearingChatToggle($event)">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" (click)="handleDisappearingChatToggle($event)" [(ngModel)]="selectedConversation.disappearChat" [checked]="selectedConversation.disappearChat">
         </div>
       </div>
     </div>

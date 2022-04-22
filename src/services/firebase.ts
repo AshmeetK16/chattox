@@ -127,6 +127,7 @@ export class FirebaseService {
 
     async updateSelectedUserFirebaseRef(activeUserData?, selectedConversationUserId?, currentUser?, messageData?, randomMessageId?) {
         const selectedConversationFirebaseRef = selectedConversationUserId && this.fireServices.collection('DirectMessages').doc(selectedConversationUserId).collection('Conversations').doc(this.currentUserData.userId);
+        const batch = this.fireServices.firestore.batch();
 
         if (currentUser && messageData && currentUser.latestMessageData) {
             selectedConversationFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
@@ -140,27 +141,27 @@ export class FirebaseService {
             })
         }
         else if (activeUserData && selectedConversationUserId) {
-            selectedConversationFirebaseRef.update({ activeUser: activeUserData.state });
+            selectedConversationFirebaseRef.update({ activeUser: activeUserData.state, disappearChat: activeUserData.disappearingChatState });
         }
         else {
-            if(selectedConversationFirebaseRef)
-                selectedConversationFirebaseRef.collection('Messages').get().subscribe(querySnapshot => {
-                    querySnapshot.forEach(res => {
-                        console.log(res.data());
-                        res.ref.delete();
-                    })
-                })
+            if(selectedConversationFirebaseRef){
+                selectedConversationFirebaseRef.delete();
+
+                const qs = await selectedConversationFirebaseRef.collection('Messages').ref.get();
+                qs.forEach(doc => batch.delete(doc.ref));
+                return batch.commit();
+            }        
         }
     }
 
-    updateCurrentUserFirebaseRef(activeUserData?, selectedConversationData?, messageData?, randomMessageId?) {
+    async updateCurrentUserFirebaseRef(activeUserData?, selectedConversationData?, messageData?, randomMessageId?) {
         const currentUserFirebaseRef = selectedConversationData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(selectedConversationData.userId);
-        
+        const batch = this.fireServices.firestore.batch();
+
         if ( selectedConversationData && messageData && selectedConversationData.latestMessageData) {
             currentUserFirebaseRef.collection('Messages').doc(randomMessageId).set(messageData);
             currentUserFirebaseRef.get().subscribe(res => {
                 if (!res.data()) {
-                    console.log(selectedConversationData);
                     currentUserFirebaseRef.set(selectedConversationData);
                 }
                 else {
@@ -168,22 +169,19 @@ export class FirebaseService {
                 }
             })
         }
-        else if(activeUserData && selectedConversationData) {
-            currentUserFirebaseRef.update({activeUser : activeUserData.state});
+        if (activeUserData && selectedConversationData) {
+            currentUserFirebaseRef.update({activeUser : activeUserData.state, disappearChat: activeUserData.disappearingChatState});
         }
         else {
-            // currentUserFirebaseRef && currentUserFirebaseRef.collection('Messages').get().toPromise()
-            //     .then((querySnapshot) => {
-            //         console.log(querySnapshot)
-            //         querySnapshot.forEach((doc) => {
-            //             console.log(doc.ref);
-            //             doc.ref.delete();
-            //         });
-            //     })
-            if(currentUserFirebaseRef)
-                currentUserFirebaseRef.collection('Messages').get().subscribe(res => {
-                    console.log(res);
-                });
+            if(currentUserFirebaseRef){
+                currentUserFirebaseRef.delete().then(res => {
+                   console.log("Chat deleted from current user db")
+               });
+
+                const qs = await currentUserFirebaseRef.collection('Messages').ref.get();
+                qs.forEach(doc => batch.delete(doc.ref));
+                return batch.commit();
+            }
         }
     }
 
@@ -192,8 +190,8 @@ export class FirebaseService {
         this.updateCurrentUserFirebaseRef(activeUserData, selectedConversation);
     }
 
-    deleteActiveUserChat(selectedConversation) {
-        this.updateSelectedUserFirebaseRef(null, selectedConversation.userId);
-        this.updateCurrentUserFirebaseRef();
+    deleteActiveUserChat(activeUserData, selectedConversation) {
+        this.updateSelectedUserFirebaseRef(activeUserData, selectedConversation.userId);
+        this.updateCurrentUserFirebaseRef(activeUserData , selectedConversation);
     }
 }

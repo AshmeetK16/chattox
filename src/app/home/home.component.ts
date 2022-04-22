@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit {
 
   updateDisappearChatToggle(disappearToggleValue) {
     this.disappearChatToggleForSelectedUser = disappearToggleValue;
+    this.firebaseService.deleteActiveUserChat({state: false, disappearingChatState: this.disappearChatToggleForSelectedUser}, this.selectedConversation);
   }
 
   onConversationSelected(selectedConversation) {
@@ -57,9 +58,10 @@ export class HomeComponent implements OnInit {
       this.firebaseService.updateActiveUserData({state: false, disappearingChatState: this.disappearChatToggleForSelectedUser}, this.selectedConversation);
     
     if (this.disappearChatToggleForSelectedUser) {
-      this.firebaseService.deleteActiveUserChat(this.selectedConversation);
+      this.firebaseService.deleteActiveUserChat(null, this.selectedConversation);
     }
-    this.selectedConversation = selectedConversation;    
+    this.selectedConversation = selectedConversation;
+    this.disappearChatToggleForSelectedUser = false;
     this.firebaseService.updateActiveUserData({state: true, disappearingChatState: this.disappearChatToggleForSelectedUser}, this.selectedConversation);
   }
 }

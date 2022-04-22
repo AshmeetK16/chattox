@@ -133,12 +133,18 @@ export class ChatContainerComponent implements OnInit {
     // Create message will be called after settimeout of defined timinig
     const randomMessageId = uuid.v4();
     let latestMessageData = this.firebaseService.createLatestMessageData(messageData, this.selectedConversation);
-    this.firebaseService.updateCurrentUserFirebaseRef(this.selectedConversation, messageData, latestMessageData, randomMessageId);
+
+    this.selectedConversation['latestMessageData'] = latestMessageData;
+    this.selectedConversation['activeUser'] = true;
+    this.selectedConversation['disappearChat'] = this.disappearChatToggle;
+
+    this.firebaseService.updateCurrentUserFirebaseRef(true, this.selectedConversation, messageData, randomMessageId);
     this.scheduledTimeRadio = parseInt(this.scheduledTimeRadio);
     const effectiveScheduledTime = this.scheduledTimeRadio*60000;
     setTimeout(() => {
       messageData.isScheduledMsg = false;
-      this.firebaseService.updateSelectedUserFirebaseRef(this.selectedConversation, this.currentUserData, this.message, latestMessageData, randomMessageId);
+      let currentUser = { ...this.currentUserData, latestMessageData: latestMessageData, activeUser: true, disappearChat: false };
+      this.firebaseService.updateSelectedUserFirebaseRef(true, this.selectedConversation.userId, currentUser, this.message, randomMessageId);
     },effectiveScheduledTime);
     this.fileDetails = undefined;
     this.firebaseService.fileDetails = undefined;
