@@ -6,8 +6,6 @@
           <img src="../../assets/images/noPic.svg" alt="" />
         </div>
         <div class="actionsContainer">
-          <img src="../../assets/images/statusIcon.svg" alt="" class="chat-controls ms-4" />
-
           <button class="btn ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#newChatCollapse"
             aria-expanded="false" aria-controls="collapseExample" (click)="updateView('newChat')">
             <img src="../../assets/images/chatIcon.svg" alt="" class="chat-controls" />
@@ -21,7 +19,6 @@
               <button ngbDropdownItem (click)="updateView('newGroup')" type="button" data-bs-toggle="collapse"
                 data-bs-target="#newGroupCollapse" aria-expanded="false" aria-controls="collapseExample">New
                 Group</button>
-              <button ngbDropdownItem>Settings</button>
               <button ngbDropdownItem (click)='logOut()'>Logout</button>
             </div>
           </div>
@@ -35,10 +32,15 @@
       </div>
     </div>
 
-    <div id="sidebarContent">
-      <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allConversations}">
-      </ng-container>
-    </div>
+    <ng-container *ngIf="allConversations.length===0">
+      <p class="ms-3 mt-3 no-active-chat">No active chats available</p>
+    </ng-container>
+    <ng-container *ngIf="allConversations.length > 0">
+      <div id="sidebarContent">
+        <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allConversations}">
+        </ng-container>
+      </div>
+    </ng-container>
   </div>
 
   <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" *ngIf="views.newChatView" id="newChatCollapse">

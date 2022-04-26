@@ -141,10 +141,11 @@ export class ChatContainerComponent implements OnInit {
     this.firebaseService.updateCurrentUserFirebaseRef(true, this.selectedConversation, messageData, randomMessageId);
     this.scheduledTimeRadio = parseInt(this.scheduledTimeRadio);
     const effectiveScheduledTime = this.scheduledTimeRadio*60000;
+    // const effectiveScheduledTime = this.scheduledTimeRadio;
     setTimeout(() => {
       messageData.isScheduledMsg = false;
       let currentUser = { ...this.currentUserData, latestMessageData: latestMessageData, activeUser: true, disappearChat: false };
-      this.firebaseService.updateSelectedUserFirebaseRef(true, this.selectedConversation.userId, currentUser, this.message, randomMessageId);
+      this.firebaseService.updateSelectedUserFirebaseRef(true, this.selectedConversation.userId, currentUser, messageData, randomMessageId);
     },effectiveScheduledTime);
     this.fileDetails = undefined;
     this.firebaseService.fileDetails = undefined;

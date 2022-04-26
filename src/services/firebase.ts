@@ -56,13 +56,15 @@ export class FirebaseService {
         if (selectedConversation.groupId) {
             const selectedConversationFirebaseRef = this.fireServices.collection('Groups').doc(selectedConversation.groupId);
 
-            let latestMessageData = {
-                user: messageData.user,
-                message: messageData.message,
-                timestamp: messageData.timestamp
-            }
+            // let latestMessageData = {
+            //     user: messageData.user,
+            //     message: messageData.message,
+            //     timestamp: messageData.timestamp
+            // }
 
-            selectedConversationFirebaseRef.update({ latestMessageData: latestMessageData });
+            let latestMessageDataForGroup = this.createLatestMessageData(messageData, selectedConversation)
+
+            selectedConversationFirebaseRef.update({ latestMessageData: latestMessageDataForGroup });
             selectedConversationFirebaseRef.collection('Conversations').doc(randomMessageId).set(messageData);
         }
         else {
@@ -155,6 +157,7 @@ export class FirebaseService {
     }
 
     async updateCurrentUserFirebaseRef(activeUserData?, selectedConversationData?, messageData?, randomMessageId?) {
+        console.log(selectedConversationData)
         const currentUserFirebaseRef = selectedConversationData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(selectedConversationData.userId);
         const batch = this.fireServices.firestore.batch();
 
