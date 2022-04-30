@@ -12,8 +12,7 @@
         </div>
 
       </div>
-
-      <div ngbDropdown class="d-flex chat-controls ms-3">
+      <div ngbDropdown class="d-flex chat-controls ms-3" *ngIf="!selectedConversation.groupId">
         Disappear chat
         <div class="form-check form-switch ms-3">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" (click)="handleDisappearingChatToggle($event)" [(ngModel)]="selectedConversation.disappearChat" [checked]="selectedConversation.disappearChat">
@@ -63,7 +62,6 @@
       </div>
       </ng-container>
     </div>
-    <!-- <p class= "file-uploaded" *ngIf="downloadURL" >File uploaded</p> -->
     <div id="footer">
       <div id="smiley-icon">
         <img

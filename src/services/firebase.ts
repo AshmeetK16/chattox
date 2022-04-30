@@ -26,7 +26,7 @@ export class FirebaseService {
         return this.fireServices.collection('Users').get();
     }
 
-    createLatestMessageData(messageData, selectedConversation){
+    createLatestMessageData(messageData, selectedConversation) {
         let latestMessageData = {
             message: messageData.message,
             timestamp: messageData.timestamp
@@ -56,11 +56,6 @@ export class FirebaseService {
         if (selectedConversation.groupId) {
             const selectedConversationFirebaseRef = this.fireServices.collection('Groups').doc(selectedConversation.groupId);
 
-            // let latestMessageData = {
-            //     user: messageData.user,
-            //     message: messageData.message,
-            //     timestamp: messageData.timestamp
-            // }
 
             let latestMessageDataForGroup = this.createLatestMessageData(messageData, selectedConversation)
 

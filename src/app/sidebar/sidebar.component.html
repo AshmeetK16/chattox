@@ -32,15 +32,10 @@
       </div>
     </div>
 
-    <ng-container *ngIf="allConversations.length===0">
-      <p class="ms-3 mt-3 no-active-chat">No active chats available</p>
-    </ng-container>
-    <ng-container *ngIf="allConversations.length > 0">
-      <div id="sidebarContent">
-        <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allConversations}">
-        </ng-container>
-      </div>
-    </ng-container>
+    <div id="sidebarContent">
+      <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allConversations}">
+      </ng-container>
+    </div>
   </div>
 
   <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" *ngIf="views.newChatView" id="newChatCollapse">
@@ -109,11 +104,6 @@
     <div *ngIf="views.newGroupView" class="group-input">
       <input  [(ngModel)]="groupName" type="text" placeholder="Enter group name" />
       <div class="smiley-icon">
-        <!-- <img
-          (click)="emojiPickerVisible = !emojiPickerVisible"
-          src="../../assets/images/smileIcon.svg"
-          alt = ""
-        /> -->
         <i class="fa fa-smile-o" (click)="emojiPickerVisible = !emojiPickerVisible" aria-hidden="true"></i>
         <emoji-mart
           (emojiClick)="emojiClicked($event)"
@@ -123,31 +113,32 @@
         ></emoji-mart>
       </div>
     </div>
-    <div class="conversation" *ngFor="
-                let clickedConversation of !searchText ? users : filteredConversations
-              " (click)="handleConversationClick(clickedConversation)">
-      <div class="form-check me-1" *ngIf="views.newGroupView" (click)="newGroupHandling(clickedConversation, $event)">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
-        </label>
-      </div>
-      <div class="picture me-1">
-        <img src="../../assets/images/noPic.svg" />
-      </div>
-      <div class="content">
-        <div class="conversationHeader">
+    <ng-container *ngIf="users.length === 0">
+      <p class="ms-3 mt-3 no-active-chat" *ngIf="views.recentChatsView">No active chats available</p>
+      <p class="ms-3 mt-3 no-active-chat" *ngIf="views.newChatView">No registered users</p>
+    </ng-container>
+    <ng-container *ngIf="users.length > 0">
+      <div class="conversation" *ngFor="
+      let clickedConversation of !searchText ? users : filteredConversations
+    " (click)="handleConversationClick(clickedConversation)">
+        <div class="form-check me-1" *ngIf="views.newGroupView" (click)="newGroupHandling(clickedConversation, $event)">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+          <label class="form-check-label" for="flexCheckDefault">
+          </label>
+          </div>
+          <div class="picture me-1">
+          <img src="../../assets/images/noPic.svg" />
+          </div>
+          <div class="content">
+          <div class="conversationHeader">
           <div class="name">{{ clickedConversation?.groupId ? clickedConversation?.groupName : clickedConversation?.userName }}</div>
           <div class="time" *ngIf="views.recentChatsView">{{ clickedConversation?.latestMessageData?.timestamp * 1000 | date:
             'hh:mm' }}</div>
+          </div>
+          <p class="user-status mb-0" *ngIf="!views.recentChatsView">{{ clickedConversation?.userStatus }}</p>
+          <p class="user-status mb-0" *ngIf="views.recentChatsView">{{ clickedConversation?.latestMessageData?.message }}</p>
         </div>
-        <p class="user-status mb-0" *ngIf="!views.recentChatsView">{{ clickedConversation?.userStatus }}</p>
-        <p class="user-status mb-0" *ngIf="views.recentChatsView">{{ clickedConversation?.latestMessageData?.message }}</p>
-        <!-- <div class="message">
-              <img *ngIf="!conversation.latestMessageRead" src="../../assets/images/doubleTick.svg" />
-              <img *ngIf="conversation.latestMessageRead" src="../../assets/images/doubleTickBlue.svg" />
-              {{ conversation.latestMessage }}
-            </div> -->
       </div>
-    </div>
+    </ng-container>
   </ng-container>
 </ng-template>

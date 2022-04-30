@@ -24,13 +24,13 @@ export class AuthService {
       this.firebaseService.getUser(res.user.uid).subscribe(res => {
         const userData = res.payload.data();
         localStorage.setItem('user',JSON.stringify(userData));
-        this.showLoginLoader = true;
+        this.showLoginLoader = false;
         return this.router.navigate(['/home']);
       });
     })
     .catch(error => {
       this.invalidLogin = true;
-      this.showLoginLoader = true;
+      this.showLoginLoader = false;
      })
   }
   
