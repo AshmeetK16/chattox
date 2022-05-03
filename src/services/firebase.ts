@@ -122,7 +122,7 @@ export class FirebaseService {
         return uploadTask.percentageChanges();
     }
 
-    async updateSelectedUserFirebaseRef(activeUserData?, selectedConversationUserId?, currentUser?, messageData?, randomMessageId?) {debugger
+    async updateSelectedUserFirebaseRef(activeUserData?, selectedConversationUserId?, currentUser?, messageData?, randomMessageId?) {
         if (!currentUser) currentUser = JSON.parse(localStorage.getItem('user'));
         const selectedConversationFirebaseRef = selectedConversationUserId && this.fireServices.collection('DirectMessages').doc(selectedConversationUserId).collection('Conversations').doc(currentUser.userId);
         const batch = this.fireServices.firestore.batch();
@@ -152,7 +152,7 @@ export class FirebaseService {
         }
     }
 
-    async updateCurrentUserFirebaseRef(activeUserData?, selectedConversationData?, currentUser?, messageData?, randomMessageId?) {debugger
+    async updateCurrentUserFirebaseRef(activeUserData?, selectedConversationData?, currentUser?, messageData?, randomMessageId?) {
         console.log(selectedConversationData)
         if (!currentUser) currentUser = JSON.parse(localStorage.getItem('user'));
         const currentUserFirebaseRef = selectedConversationData && this.fireServices.collection('DirectMessages').doc(currentUser.userId).collection('Conversations').doc(selectedConversationData.userId);
