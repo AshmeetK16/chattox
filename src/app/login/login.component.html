@@ -11,12 +11,12 @@
         <form name="loginForm" onsubmit="signIn()">
             <div class="input-container">
                 <div class="input-field mb-3">
-                    <div class="mb-1">Email:</div>
+                    <div class="mb-1">Email:*</div>
                     <input type="email" placeholder="example@gmail.com" pattern=".+@beststartupever\.com" [(ngModel)]="email" name="email" required>
                     <span role="alert" id="emailError" aria-hidden="true"> Please enter email </span>
                 </div>
                 <div class="input-field mb-3">
-                    <div class="mb-1">Password:</div>
+                    <div class="mb-1">Password:*</div>
                     <input type="password" [(ngModel)]="password" name="password" required>
                     <span role="alert" id="passwordError" aria-hidden="true"> Please enter password </span>
                 </div>
@@ -25,6 +25,7 @@
                 </button>
                 <p class="invalid-cred" *ngIf="authService.invalidLogin">Invalid username or password.</p>
                 <span>Need an account? <a href="#" class="register" [routerLink]="['/signup']">Register</a></span>
+                <p class="mb-0 mandatory-field">Fields marked with * are mandatory.</p>
             </div>
         </form>
     </div>

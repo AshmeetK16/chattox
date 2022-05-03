@@ -24,7 +24,6 @@
 
     .signup-input-container{
         width: 500px;
-        // height: 25rem;
         padding: 35px 40px;
         background-color: #fff; 
         border-radius: 5px;
@@ -49,6 +48,19 @@
                         border: 1px solid rgba(0,0,0,1);
                     }
                 }
+
+                #registerEmailError, #registerPasswordError, #nameError {
+                    display: none;
+                    font-size: 0.8em;
+                    color: red;
+                    &.visible {
+                        display: block;
+                    }
+                }
+            }
+
+            .mandatory-field {
+                font-size: 12px;
             }
 
             .login-link {

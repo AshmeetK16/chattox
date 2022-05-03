@@ -26,7 +26,7 @@ export class FirebaseService {
         return this.fireServices.collection('Users').get();
     }
 
-    createLatestMessageData(messageData, selectedConversation) {
+    createLatestMessageData(messageData, selectedConversation, currentUserData) {
         let latestMessageData = {
             message: messageData.message,
             timestamp: messageData.timestamp
@@ -44,7 +44,7 @@ export class FirebaseService {
         }
 
         if (selectedConversation.groupId) {
-            latestMessageData['username'] = this.currentUserData.userName
+            latestMessageData['username'] = currentUserData.userName
         }
 
         return latestMessageData;
@@ -57,14 +57,14 @@ export class FirebaseService {
             const selectedConversationFirebaseRef = this.fireServices.collection('Groups').doc(selectedConversation.groupId);
 
 
-            let latestMessageDataForGroup = this.createLatestMessageData(messageData, selectedConversation)
+            let latestMessageDataForGroup = this.createLatestMessageData(messageData, selectedConversation, currentUserData)
 
             selectedConversationFirebaseRef.update({ latestMessageData: latestMessageDataForGroup });
             selectedConversationFirebaseRef.collection('Conversations').doc(randomMessageId).set(messageData);
         }
         else {
 
-            let latestMessageData = this.createLatestMessageData(messageData, selectedConversation)
+            let latestMessageData = this.createLatestMessageData(messageData, selectedConversation, currentUserData)
             console.log(latestMessageData);
 
             selectedConversation['latestMessageData'] = latestMessageData;
@@ -73,7 +73,7 @@ export class FirebaseService {
             let currentUser = { ...currentUserData, latestMessageData: latestMessageData, activeUser: true, disappearChat: false };
 
             this.updateSelectedUserFirebaseRef(true, selectedConversation.userId, currentUser, messageData, randomMessageId);
-            this.updateCurrentUserFirebaseRef(true, selectedConversation, messageData, randomMessageId);
+            this.updateCurrentUserFirebaseRef(true, selectedConversation, currentUser, messageData, randomMessageId);
         }
     }
 
@@ -122,8 +122,9 @@ export class FirebaseService {
         return uploadTask.percentageChanges();
     }
 
-    async updateSelectedUserFirebaseRef(activeUserData?, selectedConversationUserId?, currentUser?, messageData?, randomMessageId?) {
-        const selectedConversationFirebaseRef = selectedConversationUserId && this.fireServices.collection('DirectMessages').doc(selectedConversationUserId).collection('Conversations').doc(this.currentUserData.userId);
+    async updateSelectedUserFirebaseRef(activeUserData?, selectedConversationUserId?, currentUser?, messageData?, randomMessageId?) {debugger
+        if (!currentUser) currentUser = JSON.parse(localStorage.getItem('user'));
+        const selectedConversationFirebaseRef = selectedConversationUserId && this.fireServices.collection('DirectMessages').doc(selectedConversationUserId).collection('Conversations').doc(currentUser.userId);
         const batch = this.fireServices.firestore.batch();
 
         if (currentUser && messageData && currentUser.latestMessageData) {
@@ -151,9 +152,10 @@ export class FirebaseService {
         }
     }
 
-    async updateCurrentUserFirebaseRef(activeUserData?, selectedConversationData?, messageData?, randomMessageId?) {
+    async updateCurrentUserFirebaseRef(activeUserData?, selectedConversationData?, currentUser?, messageData?, randomMessageId?) {debugger
         console.log(selectedConversationData)
-        const currentUserFirebaseRef = selectedConversationData && this.fireServices.collection('DirectMessages').doc(this.currentUserData.userId).collection('Conversations').doc(selectedConversationData.userId);
+        if (!currentUser) currentUser = JSON.parse(localStorage.getItem('user'));
+        const currentUserFirebaseRef = selectedConversationData && this.fireServices.collection('DirectMessages').doc(currentUser.userId).collection('Conversations').doc(selectedConversationData.userId);
         const batch = this.fireServices.firestore.batch();
 
         if ( selectedConversationData && messageData && selectedConversationData.latestMessageData) {
@@ -163,7 +165,7 @@ export class FirebaseService {
                     currentUserFirebaseRef.set(selectedConversationData);
                 }
                 else {
-                    currentUserFirebaseRef.update({ latestMessageData: selectedConversationData.latestMessageData    });
+                    currentUserFirebaseRef.update({ latestMessageData: selectedConversationData.latestMessageData });
                 }
             })
         }

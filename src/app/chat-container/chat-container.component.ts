@@ -65,10 +65,13 @@ export class ChatContainerComponent implements OnInit {
     this.fileDetails = this.firebaseService.fileDetails;
     this.message = '';
     if (value.length < 1) return false;
+    
+    const currentUserData = this.authService.getCurrentUserData();
+    if (this.currentUserData.userId !== currentUserData.userId) this.currentUserData = currentUserData;
 
     let messageData = {
       message: value,
-      user: this.currentUserData.userId,
+      user: currentUserData.userId,
       timestamp: new Date(new Date().getTime()),
       isScheduledMsg: false
     }
@@ -79,10 +82,10 @@ export class ChatContainerComponent implements OnInit {
     }
 
     if (this.selectedConversation.groupId) {
-      messageData['username'] = this.currentUserData.userName
+      messageData['username'] = currentUserData.userName
     }
 
-    this.firebaseService.createMessage(messageData, this.selectedConversation, this.currentUserData);
+  this.firebaseService.createMessage(messageData, this.selectedConversation, currentUserData);
     this.fileDetails = undefined;
     this.firebaseService.fileDetails = undefined;  
   }
@@ -114,9 +117,12 @@ export class ChatContainerComponent implements OnInit {
     this.fileDetails = this.firebaseService.fileDetails;
     if (this.message === '') return;
 
+    const currentUserData = this.authService.getCurrentUserData();
+    if (this.currentUserData.userId !== currentUserData.userId) this.currentUserData = currentUserData;
+
     let messageData = {
       message: this.message,
-      user: this.currentUserData.userId,
+      user: currentUserData.userId,
       timestamp: new Date(new Date().getTime()),
       isScheduledMsg: true
     }
@@ -127,28 +133,27 @@ export class ChatContainerComponent implements OnInit {
     }
 
     if (this.selectedConversation.groupId) {
-      messageData['username'] = this.currentUserData.userName
+      messageData['username'] = currentUserData.userName
     }
 
     // Create message will be called after settimeout of defined timinig
     const randomMessageId = uuid.v4();
-    let latestMessageData = this.firebaseService.createLatestMessageData(messageData, this.selectedConversation);
+    let latestMessageData = this.firebaseService.createLatestMessageData(messageData, this.selectedConversation, currentUserData);
 
     this.selectedConversation['latestMessageData'] = latestMessageData;
     this.selectedConversation['activeUser'] = true;
     this.selectedConversation['disappearChat'] = this.disappearChatToggle;
 
-    this.firebaseService.updateCurrentUserFirebaseRef(true, this.selectedConversation, messageData, randomMessageId);
+    this.firebaseService.updateCurrentUserFirebaseRef(true, this.selectedConversation, currentUserData, messageData, randomMessageId);
     this.scheduledTimeRadio = parseInt(this.scheduledTimeRadio);
-    const effectiveScheduledTime = this.scheduledTimeRadio*60000;
-    // const effectiveScheduledTime = this.scheduledTimeRadio;
     setTimeout(() => {
       messageData.isScheduledMsg = false;
       let currentUser = { ...this.currentUserData, latestMessageData: latestMessageData, activeUser: true, disappearChat: false };
       this.firebaseService.updateSelectedUserFirebaseRef(true, this.selectedConversation.userId, currentUser, messageData, randomMessageId);
-    },effectiveScheduledTime);
+    },this.scheduledTimeRadio);
     this.fileDetails = undefined;
     this.firebaseService.fileDetails = undefined;
+    this.message = ''
   }
 
   handleDisappearingChatToggle(event) {

@@ -7,7 +7,7 @@ import { FirebaseService } from './../services/firebase';
   providedIn: 'root'
 })
 export class AuthService {
-  userStatus = "Hey there! I am using WhatsApp."
+  userStatus = "Hey there! I am using Chattox."
   isLoggedIn = JSON.parse(localStorage.getItem('user')) ? true : false;
   public invalidLogin: boolean = false;
   public showLoginLoader: boolean = false;

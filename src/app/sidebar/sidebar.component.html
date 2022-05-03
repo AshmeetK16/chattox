@@ -114,8 +114,7 @@
       </div>
     </div>
     <ng-container *ngIf="users.length === 0">
-      <p class="ms-3 mt-3 no-active-chat" *ngIf="views.recentChatsView">No active chats available</p>
-      <p class="ms-3 mt-3 no-active-chat" *ngIf="views.newChatView">No registered users</p>
+      <p class="ms-3 mt-3 no-active-chat" *ngIf="views.recentChatsView">No active chats available. Click on the the new chat to start a conversation.</p>
     </ng-container>
     <ng-container *ngIf="users.length > 0">
       <div class="conversation" *ngFor="

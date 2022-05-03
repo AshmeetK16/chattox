@@ -156,27 +156,27 @@
       </div>
       <div class="modal-body">
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="1min" id="scheduleTime1" checked>
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="10000" id="scheduleTime1" checked>
           <label class="form-check-label" for="scheduleTime1">
+            10 sec
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="30000" id="scheduleTime2">
+          <label class="form-check-label" for="scheduleTime2">
+            30 sec
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="60000" id="scheduleTime3">
+          <label class="form-check-label" for="scheduleTime3">
             1 mins
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="2mins" id="scheduleTime2">
-          <label class="form-check-label" for="scheduleTime2">
-            2 mins
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="5mins" id="scheduleTime3">
-          <label class="form-check-label" for="scheduleTime3">
-            5 mins
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="10mins" id="scheduleTime4">
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="300000" id="scheduleTime4">
           <label class="form-check-label" for="scheduleTime4">
-            10 mins
+            5 min
           </label>
         </div>
       </div>
