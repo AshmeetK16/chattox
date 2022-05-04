@@ -1,0 +1,143 @@
+<div class="sidebar-wrapper">
+  <div class="chat-sidebar" *ngIf="views.recentChatsView">
+    <div id="row1">
+      <div id="sidebarHeader">
+        <div class="avatarContainer">
+          <img src="../../assets/images/noPic.svg" alt="" />
+        </div>
+        <div class="actionsContainer">
+          <button class="btn ms-3" type="button" data-bs-toggle="collapse" data-bs-target="#newChatCollapse"
+            aria-expanded="false" aria-controls="collapseExample" (click)="updateView('newChat')">
+            <img src="../../assets/images/chatIcon.svg" alt="" class="chat-controls" />
+          </button>
+
+          <div ngbDropdown class="d-inline-block chat-controls ms-3">
+            <button class="btn dropdown" id="dropdownMenuButton" ngbDropdownToggle>
+              <img src="../../assets/images/moreVertIcon.svg" alt="" />
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownMenuButton" class="controls-dropdown-menu">
+              <button ngbDropdownItem (click)="updateView('newGroup')" type="button" data-bs-toggle="collapse"
+                data-bs-target="#newGroupCollapse" aria-expanded="false" aria-controls="collapseExample">New
+                Group</button>
+              <button ngbDropdownItem (click)='logOut()'>Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="searchBoxContainer">
+        <div id="searchBox">
+          <img width="19" src="../../assets/images/searchIcon.svg" />
+          <input [(ngModel)]="searchText" type="text" placeholder="Search or start the new chat" />
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebarContent">
+      <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allConversations}">
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" *ngIf="views.newChatView" id="newChatCollapse">
+    <div id="row1">
+      <div id="sidebarHeader">
+        <div class="actionsContainer">
+          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newChatCollapse" (click) = "updateView()"
+            aria-expanded="false" aria-controls="collapseExample">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          </button>
+
+          <p class="mb-0">New Chat</p>
+        </div>
+      </div>
+      <div class="searchBoxContainer">
+        <div id="searchBox">
+          <img width="19" src="../../assets/images/searchIcon.svg" />
+          <input [(ngModel)]="searchText" type="text" placeholder="Search or start the new chat" />
+        </div>
+      </div>
+    </div>
+
+    <div id="sidebarContent">
+      <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allUsers}"></ng-container>
+    </div>
+  </div>
+
+  <div class="collapse h-100 w-100 position-absolute new-chat-sidebar" *ngIf="views.newGroupView" id="newGroupCollapse">
+    <div id="row1">
+      <div id="sidebarHeader">
+        <div class="actionsContainer">
+          <button class="btn" type="button" data-bs-toggle="collapse" data-bs-target="#newGroupCollapse" (click) = "updateView()"
+            aria-expanded="false" aria-controls="collapseExample">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+          </button>
+
+          <p class="mb-0">New Group</p>
+        </div>
+      </div>
+      <div class="searchBoxContainer">
+        <div id="searchBox">
+          <img width="19" src="../../assets/images/searchIcon.svg" />
+          <input [(ngModel)]="searchText" type="text" placeholder="Search or start the new chat" />
+        </div>
+      </div>
+    <div>
+
+      </div>
+    </div>
+
+    <div id="sidebarContent">
+      <div class="all-conversations">
+        <ng-container [ngTemplateOutlet]='UsersListContainer' [ngTemplateOutletContext]="{users:allUsers}"></ng-container>
+      </div>
+      <button type="button" class="btn btn-success add-members-group" *ngIf="views.newGroupView && this.usersPresentInGroup.length>0" (click)="createGroup()"><i class="fa fa-plus" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #UsersListContainer let-users='users'>
+  <ng-container *ngIf="showConversationsLoader">
+    <div class="d-flex justify-content-center align-items-center conversations-loader"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i></div>
+  </ng-container>
+  <ng-container *ngIf="!showConversationsLoader">
+    <div *ngIf="views.newGroupView" class="group-input">
+      <input  [(ngModel)]="groupName" type="text" placeholder="Enter group name" />
+      <div class="smiley-icon">
+        <i class="fa fa-smile-o" (click)="emojiPickerVisible = !emojiPickerVisible" aria-hidden="true"></i>
+        <emoji-mart
+          (emojiClick)="emojiClicked($event)"
+          *ngIf="emojiPickerVisible"
+          style="position: absolute; top: 35px; right: 0;"
+          [darkMode]="false"
+        ></emoji-mart>
+      </div>
+    </div>
+    <ng-container *ngIf="users.length === 0">
+      <p class="ms-3 mt-3 no-active-chat" *ngIf="views.recentChatsView">No active chats available. Click on the the new chat to start a conversation.</p>
+    </ng-container>
+    <ng-container *ngIf="users.length > 0">
+      <div class="conversation" *ngFor="let clickedConversation of !searchText ? users : filteredConversations" 
+      (click)="handleConversationClick(clickedConversation)">
+        <div class="form-check me-1" *ngIf="views.newGroupView" (click)="newGroupHandling(clickedConversation, $event)">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+          <label class="form-check-label" for="flexCheckDefault">
+          </label>
+        </div>
+        <div class="picture me-1">
+          <img src="../../assets/images/noPic.svg" />
+        </div>
+        <div class="content">
+          <div class="conversationHeader">
+            <div class="name">{{ clickedConversation?.groupId ? clickedConversation?.groupName : clickedConversation?.userName }}</div>
+            <div class="time" *ngIf="views.recentChatsView">{{ clickedConversation?.latestMessageData?.timestamp * 1000 | date:
+              'hh:mm' }}
+            </div>
+          </div>
+          <p class="user-status mb-0" *ngIf="!views.recentChatsView">{{ clickedConversation?.userStatus }}</p>
+          <p class="user-status mb-0" *ngIf="views.recentChatsView">{{ clickedConversation?.latestMessageData?.message }}</p>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>

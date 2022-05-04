@@ -1,0 +1,33 @@
+<div class="background-header">
+    <img src="../../assets/images/logo.png" class="brand-logo ms-4 mt-4" alt=""/>
+</div>
+<div class="background-footer"></div>
+<div class="signup-container d-flex justify-content-center align-items-center">
+    <div class="signup-input-container">
+        <div class="container-header text-center mb-4">
+            <h2>Create an Account</h2>
+        </div>
+        <form name="registerForm" onsubmit="signUp()">
+            <div class="input-container">
+                <div class="input-field mb-3">
+                    <div class="mb-1">Full Name:*</div>
+                    <input type="text" [(ngModel)]="name" name="name">
+                    <span role="alert" id="nameError" aria-hidden="true"> Please enter fullname </span>
+                </div>
+                <div class="input-field mb-3">
+                    <div class="mb-1">Email:*</div>
+                    <input type="email" [(ngModel)]="email" name="registerEmail">
+                    <span role="alert" id="registerEmailError" aria-hidden="true"> Please enter email </span>
+                </div>
+                <div class="input-field mb-3">
+                    <div class="mb-1">Password:*</div>
+                    <input type="password" [(ngModel)]="password" name="registerPassword">
+                    <span role="alert" id="registerPasswordError" aria-hidden="true"> Please enter password </span>
+                </div>
+                <button type="button" (click) = 'signUp()' class="btn btn-success w-100 mb-1">Sign Up</button>
+                <span><a href="#" class="login-link" [routerLink]="['/login']">Already have an account?</a></span>
+                <p class="mb-0 mandatory-field">Fields marked with * are mandatory.</p>
+            </div>
+        </form>
+    </div>
+</div>

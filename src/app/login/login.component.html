@@ -1,0 +1,32 @@
+<div class="background-header">
+    <img src="../../assets/images/logo.png" class="brand-logo ms-4 mt-4" alt=""/>
+</div>
+<div class="background-footer"></div>
+<div class="login-container d-flex justify-content-center align-items-center">
+    <div class="login-input-container">
+        <div class="container-header text-center mb-4">
+            <h2>Chattox</h2>
+            <div>We're excited to see you again</div>
+        </div>
+        <form name="loginForm" onsubmit="signIn()">
+            <div class="input-container">
+                <div class="input-field mb-3">
+                    <div class="mb-1">Email:*</div>
+                    <input type="email" placeholder="example@gmail.com" pattern=".+@beststartupever\.com" [(ngModel)]="email" name="email" required>
+                    <span role="alert" id="emailError" aria-hidden="true"> Please enter email </span>
+                </div>
+                <div class="input-field mb-3">
+                    <div class="mb-1">Password:*</div>
+                    <input type="password" [(ngModel)]="password" name="password" required>
+                    <span role="alert" id="passwordError" aria-hidden="true"> Please enter password </span>
+                </div>
+                <button type="submit" (click) = 'signIn()' class="btn btn-success w-100 mb-1">Log In
+                    <span *ngIf="authService.showLoginLoader"><i class="fa fa-spinner fa-spin ms-2" aria-hidden="true"></i></span>
+                </button>
+                <p class="invalid-cred" *ngIf="authService.invalidLogin">Invalid username or password.</p>
+                <span>Need an account? <a href="#" class="register" [routerLink]="['/signup']">Register</a></span>
+                <p class="mb-0 mandatory-field">Fields marked with * are mandatory.</p>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,189 @@
+<div id="container">
+    <div id="header">
+      <div class="avatarSection">
+        <div class="picture">
+          <img src="../../assets/images/noPic.svg" alt=""/>
+        </div>
+        
+        <div class="group-info d-flex flex-column justify-content-center">
+          <div class="groupName">{{selectedConversation.userName ? selectedConversation.userName : selectedConversation.groupName}}</div>
+          <div class="group-users" *ngIf="selectedConversation.groupId">{{allGroupUsers}}
+          </div>
+        </div>
+
+      </div>
+      <div ngbDropdown class="d-flex chat-controls ms-3" *ngIf="!selectedConversation.groupId">
+        Disappear chat
+        <div class="form-check form-switch ms-3">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" (click)="handleDisappearingChatToggle($event)" [(ngModel)]="selectedConversation.disappearChat" [checked]="selectedConversation.disappearChat">
+        </div>
+      </div>
+    </div>
+    <div id="body">
+      <ng-container *ngIf="showChatLoader">
+        <div class="d-flex justify-content-center align-items-center chat-loader"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i></div>
+      </ng-container>
+      <ng-container *ngIf="!showChatLoader">
+        <div
+        class="message"
+        [ngClass]="{ 'me' : message.user === currentUserData.userId}"
+        *ngFor="let message of messages"
+      >
+        <ng-container *ngIf="!message.fileType">
+          <div class="messageContent">
+            <p *ngIf="message.user !== currentUserData.userId">{{message.username}}</p>
+            <i *ngIf="message.isScheduledMsg" class="fa fa-clock-o" aria-hidden="true"></i>
+            {{ message.message }}
+            <div class="time">{{ message.timestamp * 1000 | date: 'hh:mm' }}</div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="message.fileType">
+          <div class="messageContent">
+            <div [ngSwitch]="message.fileType">
+              <ng-template [ngSwitchCase]="'image/png'">
+                <img class="preview-image" [src]='message.message' alt="" />
+              </ng-template>
+              <ng-template [ngSwitchCase]="'video/mp4'">
+                <video width="320" height="240" controls>
+                  <source [src]='message.message' type="video/mp4">
+                Your browser does not support the video tag.
+                </video>
+              </ng-template>
+              <ng-template [ngSwitchCase]="'audio/ogg'">
+                <audio controls>
+                  <source [src]='message.message' type="audio/ogg">
+                  Your browser does not support the audio tag.
+                </audio>
+              </ng-template>
+              <div class="time">{{ message.timestamp * 1000 | date: 'hh:mm' }}</div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      </ng-container>
+    </div>
+    <div id="footer">
+      <div id="smiley-icon">
+        <img
+          (click)="emojiPickerVisible = !emojiPickerVisible"
+          src="../../assets/images/smileIcon.svg"
+          alt=""
+        />
+        <emoji-mart
+          (emojiClick)="emojiClicked($event)"
+          *ngIf="emojiPickerVisible"
+          style="position: absolute; bottom: 50px"
+          [darkMode]="false"
+        ></emoji-mart>
+      </div>
+      <div id="attachment-icon">
+        <label for="file-input">
+          <img src="../../assets/images/attached.svg" alt=""/>
+        </label>
+
+        <input type="file" id="file-input" (change)="handleFileUpload($event)">
+      </div>
+      <div id="textarea">
+        <textarea
+          [(ngModel)]="message"
+          (keyup.enter)="submitMessage($event)"
+          placeholder="Type a message"
+        ></textarea>
+      </div>
+      <div id="scheduled-msg-icon" data-bs-toggle="modal" data-bs-target="#scheduledTimeModal">
+        <i class="fa fa-clock-o" aria-hidden="true"></i>
+      </div>
+    </div>
+</div>
+
+<button hidden="true" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mediaModal" id="mediaModalBtn">
+  Launch demo modal
+</button>
+<!-- Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1"  data-backdrop="false" aria-labelledby="mediaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Preview</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <span [ngSwitch]="firebaseService?.fileDetails?.fileType">
+          <ng-template [ngSwitchCase]="'image/png'">
+            <img class="preview-image" [src]='firebaseService?.fileDetails?.downloadURL' alt="" />
+          </ng-template>
+          <ng-template [ngSwitchCase]="'video/mp4'">
+            <video width="320" height="240" controls>
+              <source [src]='firebaseService?.fileDetails?.downloadURL' type="video/mp4">
+            Your browser does not support the video tag.
+            </video>
+          </ng-template>
+          <ng-template [ngSwitchCase]="'audio/ogg'">
+            <audio controls>
+              <source [src]='firebaseService?.fileDetails?.downloadURL' type="audio/ogg">
+              Your browser does not support the audio tag.
+            </audio>
+          </ng-template>
+        </span>
+        <div *ngIf="percentage >=0 && percentage <100" class="progress mt-2">
+          <div
+            class="progress-bar progress-bar-info"
+            role="progressbar"
+            attr.aria-valuenow="{{ percentage }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [ngStyle]="{ width: percentage + '%' }"
+          >
+            {{ percentage }}%
+          </div>
+        </div>
+        <span *ngIf="firebaseService.showPreviewLoader"><i class="fa fa-spinner fa-spin d-flex justify-content-center" aria-hidden="true"></i></span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="submitMessage()" data-bs-dismiss="modal">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="scheduledTimeModal" tabindex="-1" data-backdrop="false" aria-labelledby="scheduledTimeModalLabel" aria-hidden="true" tabindex="-1">
+  <div class="modal-dialog  modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Scheduled Time</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="10000" id="scheduleTime1" checked>
+          <label class="form-check-label" for="scheduleTime1">
+            10 sec
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="30000" id="scheduleTime2">
+          <label class="form-check-label" for="scheduleTime2">
+            30 sec
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="60000" id="scheduleTime3">
+          <label class="form-check-label" for="scheduleTime3">
+            1 mins
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="radioDefault" [(ngModel)]="scheduledTimeRadio" value="300000" id="scheduleTime4">
+          <label class="form-check-label" for="scheduleTime4">
+            5 min
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="handleScheduledMessage($event)" data-bs-dismiss="modal">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
